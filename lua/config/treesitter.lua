@@ -48,7 +48,7 @@ require("nvim-treesitter.configs").setup {
       init_selection = "gnn",
       node_incremental = "grn",
       scope_incremental = "grc",
-      node_decremental = "grm,"
+      node_decremental = "grm",
     },
   },
 }
