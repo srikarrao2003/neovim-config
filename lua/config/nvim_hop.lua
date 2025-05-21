@@ -27,7 +27,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   end,
 })
 
-keymap.set('n', '<space>h', ':HopWord<CR>', {})
+keymap.set('n', 's', ':HopWord<CR>', {})
 
 -- Pattern and character based navigation
 keymap.set('n', '<space>p', ':HopPattern<CR>', {})

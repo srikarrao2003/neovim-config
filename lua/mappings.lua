@@ -297,7 +297,7 @@ vim.keymap.set("n", "<Space>i", ":wincmd p<CR>", { noremap = true, silent = true
 
 -- Replace All Uses with shortcut
 
-vim.keymap.set("n", "<Space>rw", [[:%s/\<<C-r><C-w>\>//g<Left><Left>]], { noremap = true, silent = true })
+vim.keymap.set("n", "<Space>rr", [[:%s/\<<C-r><C-w>\>//g<Left><Left>]], { noremap = true, silent = true })
 
 -- Removes default yanking while deleting the text
 
@@ -311,6 +311,7 @@ vim.api.nvim_set_keymap('n', '<Space>fh', [[:lua require('telescope.builtin').he
 vim.api.nvim_set_keymap('n', '<Space>fg', [[:lua require('telescope.builtin').live_grep({ layout_strategy = 'vertical' })<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Space>ft', ':Leaderf bufTag --popup<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Space>fd', [[:lua require('telescope.builtin').buffers({ layout_strategy = 'vertical' })<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Space>fw', [[:lua require('telescope.builtin').current_buffer_fuzzy_find({ layout_strategy = 'vertical' })<CR>]], { noremap = true, silent = true })
 
 
 -- Diagnostics
@@ -349,6 +350,7 @@ keymap("n", "<C-y>", "2<C-y>", opts) -- Scroll up faster
 
 -- Show full file path with <space>fp
 vim.keymap.set('n', '<space>fp', function()
+  vim.fn.setreg('+', vim.fn.expand('%:p'))
   print(vim.fn.expand('%:p'))
 end, { desc = "Print full file path" })
 
@@ -409,3 +411,13 @@ vim.api.nvim_set_keymap('n', '<C-j>', '<cmd>TmuxNavigateDown<cr>', { noremap = t
 -- move across function setting
 vim.api.nvim_set_keymap('n', 'm', '}', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'M', '{', { noremap = true, silent = true })
+vim.keymap.set({'n', 'v'}, 't', '%')
+
+-- copy line
+vim.api.nvim_set_keymap('n', 'yL', 'y$', { noremap = true, silent = true })
+
+vim.keymap.set('n', 'o', 'o <BS>', { noremap = true })
+
+-- rename across project
+vim.keymap.set("n", "<space>rw", "<cmd>Lspsaga rename<CR>", {desc = "Rename symbol"} )
+vim.keymap.set("n", "<space>R", "<cmd>Lspsaga rename ++project<CR>", {desc = "Rename symbol (project-wide)"} )

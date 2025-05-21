@@ -45,8 +45,35 @@ vim.cmd([[
   augroup END
 ]])
 
+vim.cmd([[
+  augroup mlirSyntax
+    autocmd!
+    autocmd BufNewFile,BufRead *.mlir set filetype=mlir
+  augroup END
+]])
+
+vim.cmd([[
+  highlight RainbowDelimiterRed guifg=#E06C75 
+  highlight RainbowDelimiterYellow guifg=#E5C07B
+  highlight RainbowDelimiterBlue guifg=#61AFEF 
+  highlight RainbowDelimiterOrange guifg=#D19A66 
+  highlight RainbowDelimiterGreen guifg=#98C380
+  highlight RainbowDelimiterViolet guifg=#C678DD
+  highlight RainbowDelimiterCyan guifg=#56B6C2
+]])
+
+vim.api.nvim_create_autocmd('VimEnter', {
+  pattern = '*',
+  callback = function()
+    vim.cmd('TSEnable highlight')
+  end
+})
+
 -- Enable mouse
 vim.opt.mouse = "a"
+vim.o.scroll = 20
+
+vim.g.python_highlight_all = 1
 
 -- Smooth mouse Scroll
 vim.keymap.set("n", "<ScrollWheelUp>", "3<C-Y>", { noremap = true, silent = true })

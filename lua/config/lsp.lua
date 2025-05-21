@@ -32,7 +32,7 @@ local custom_attach = function(client, bufnr)
 
   -- Set some key bindings conditional on server capabilities
   if client.server_capabilities.documentFormattingProvider and client.name ~= "lua_ls" then
-    map({ "n", "x" }, "<space>f", vim.lsp.buf.format, { desc = "format code" })
+    map({ "n", "x" }, "<space>bf", vim.lsp.buf.format, { desc = "format code" })
   end
 
   -- Uncomment code below to enable inlay hint from language server, some LSP server supports inlay hint,
@@ -218,6 +218,21 @@ if utils.executable("ruff") then
     },
   }
 end
+
+-- Python formatter
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "python",
+  callback = function()
+    -- Set buffer-local formatter
+    vim.api.nvim_buf_set_keymap(
+      0,
+      "n",
+      "<space>bf",
+      ":!black %<CR>",
+      { noremap = true, silent = true, desc = "Format Python file with black"}
+    )
+  end
+})
 
 -- Disable ruff hover feature in favor of Pyright
 vim.api.nvim_create_autocmd("LspAttach", {

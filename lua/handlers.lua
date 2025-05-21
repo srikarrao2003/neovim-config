@@ -153,6 +153,23 @@ M.on_attach = function(client, bufnr)
     if not status_ok then
         return
     end
+    illuminate.configure({
+        --Delay before highlighting
+        delay = 100,
+
+        --Which filetypes to enable
+        filetypes_denylist = {
+          'dirvish',
+          'fugitive',
+          'NvimTree',
+          'TelescopePrompt'
+        },
+
+        --Configure modes
+        modes_denylist = {
+          'i' --Disable in insert mode
+        }
+    })
     illuminate.on_attach(client, bufnr)
 end
 

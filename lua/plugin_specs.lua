@@ -50,6 +50,285 @@ local plugin_specs = {
       require("config.lsp")
     end,
   },
+  -- lspaga
+  {
+    "nvimdev/lspsaga.nvim",
+    event = "LspAttach",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons"
+    },
+    config = function()
+      require("lspsaga").setup({
+        -- Symbol in windar (top right corner)
+        symbol_in_winbar = {
+          enable = true,
+          separator = " > ",
+          ignore_patterns = {},
+          hide_keyword = true,
+          show_file = true,
+          folder_level = 2,
+          respect_root = false,
+          color_mode = true,
+        },
+        -- UI settings with compatible icons
+        ui = {
+          border = "rounded",
+          winblend = 10,
+          title = true,
+          devicon = true,
+          expand = "+",
+          collapse = "-",
+          code_action = ">>",
+          incoming = "<-",
+          outgoing = "->",
+          hover = '?',
+          kind = {},
+        },
+        -- Rename settings
+        rename = {
+          in_select = true,
+          auto_save = true,
+          project_max_width = 0.5,
+          project_max_height = 0.5,
+          keys = {
+            quit = "<ESC>",
+            exec = "<CR>",
+            select = "x",
+          },
+        },
+        --Find settings for symbol navigation
+        finder = {
+          max_height = 0.6,
+          min_width = 30,
+          force_max_height = false,
+          keys = {
+            jump_to = 'p',
+            expand_or_jump = 'o',
+            vsplit = 's',
+            split = 'i',
+            tabe = 't',
+            quit = { 'q', '<ESC>' },
+            close_in_preview = '<ESC>',
+          },
+        },
+        -- Outline settings
+        outline = {
+          win_position = "right",
+          win_width = 30,
+          auto_preview = true,
+          detail = true,
+          auto_close = true,
+          close_after_jump = true,
+          layout = "normal",
+          max_height = 0.6,
+          left_width = 0.3,
+          keys = {
+            jump = 'o',
+            expand_collapse = 'u',
+            quit = 'q',
+          },
+        },
+        -- Code actions
+        code_action = {
+          num_shortcut = true,
+          show_server_name = true,
+          extend_gitsigns = true,
+          keys = {
+            quit = "q",
+            exec = "<CR>",
+          },
+        },
+        -- Optional: custom keymaps
+        lightbulb = {
+          enable = true,
+          enable_in_insert = true,
+          sign = true,
+          sign_priority = 40,
+          virtual_text = true,
+        }
+      })
+
+      -- Set up keymaps for easier navigation
+      local keymap = vim.keymap.set
+      -- Symbol finder
+      keymap("n", "<space>lo", "<cmd>Lspsaga finder<CR>", { desc = "LSP Symbol Finder" })
+
+      keymap("n", "<space>ls", "<cmd>Lspsaga outline<CR>", { desc = "LSP Outline" })
+
+      keymap("n", "<space>ld", "<cmd>Lspsaga peek_definition<CR>", { desc = "LSP Peek Definition" })
+
+      keymap("n", "<space>lD", "<cmd>Lspsaga goto_definition<CR>", { desc = "LSP Goto Definition" })
+
+      keymap("n", "<space>lw", "<cmd>Lspsaga winbar_toggle<CR>", { desc = "LSP Toggle Winbar Symbols" })
+    end,
+  },
+  -- lsp signature
+  {
+    "ray-x/lsp_signature.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      local signature_config = {
+        -- General settings
+        debug = false,                      -- Set to true for debug logging
+        log_path = vim.fn.stdpath("cache") .. "/lsp_signature.log",
+        verbose = false,                    -- Show verbose log messages
+        
+        -- Floating window settings
+        bind = true,                        -- Bind to keymaps if provided
+        doc_lines = 10,                     -- Maximum number of lines in the signature help window
+        max_height = 12,                    -- Max height of signature floating window
+        max_width = 80,                     -- Max width of signature floating window
+        wrap = true,                        -- Wrap long lines
+        floating_window = true,             -- Show floating window for signature
+        floating_window_above_cur_line = true, -- Try to place the floating above the current line when possible
+        floating_window_off_x = 1,          -- X offset of floating window
+        floating_window_off_y = 0,          -- Y offset of floating window (negative value puts it above the cursor)
+        
+        -- Visual settings  
+        fix_pos = false,                    -- Fix floating window position
+        hint_enable = true,                 -- Virtual text hint
+        hint_prefix = "🔍 ",                -- Change to a simpler character if needed: "🐼 " or "➡️ " or "» "
+        hint_scheme = "String",             -- Color scheme for virtual text
+        hint_inline = function() return false end, -- When to show inline hints
+        hi_parameter = "LspSignatureActiveParameter", -- Color for active parameter
+        handler_opts = {
+          border = "rounded"                -- "shadow", "none", or "rounded"
+        },
+        
+        -- Always show signature help when typing '(' or ','
+        always_trigger = false,             -- Show signature on new line and space
+        auto_close_after = nil,             -- Close signature floating window after n seconds
+        check_completion_visible = true,    -- Don't show if completion menu is visible
+        
+        -- Keymaps
+        toggle_key = "<C-k>",               -- Toggle signature on and off with Ctrl-k
+        toggle_key_flip_floatwin_setting = false, -- Flip floatwin setting when toggle_key is triggered
+        select_signature_key = "<M-n>",     -- Cycle to next signature with Alt-n
+        move_cursor_key = nil,              -- Move cursor to signature with these keys
+      }
+      
+      -- Initialize the plugin
+      require("lsp_signature").setup(signature_config)
+      
+      -- Setup custom keymaps
+      setup_keymaps()
+      
+      -- Setup signature on LSP attach
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("LspSignatureSetup", { clear = true }),
+        callback = function(args)
+          -- Only enable for supported language servers
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if client then
+            require("lsp_signature").on_attach(signature_config, args.buf)
+          end
+        end,
+      })
+    end,
+  },
+  --lspkind
+  {
+    "onsails/lspkind.nvim",
+  },
+  --color-menu
+  {
+    "xzbdmw/colorful-menu.nvim",
+    config = function()
+        -- You don't need to set these options.
+        require("colorful-menu").setup({
+            ls = {
+                lua_ls = {
+                    -- Maybe you want to dim arguments a bit.
+                    arguments_hl = "@comment",
+                },
+                gopls = {
+                    -- By default, we render variable/function's type in the right most side,
+                    -- to make them not to crowd together with the original label.
+
+                    -- when true:
+                    -- foo             *Foo
+                    -- ast         "go/ast"
+
+                    -- when false:
+                    -- foo *Foo
+                    -- ast "go/ast"
+                    align_type_to_right = true,
+                    -- When true, label for field and variable will format like "foo: Foo"
+                    -- instead of go's original syntax "foo Foo". If align_type_to_right is
+                    -- true, this option has no effect.
+                    add_colon_before_type = false,
+                    -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
+                    preserve_type_when_truncate = true,
+                },
+                -- for lsp_config or typescript-tools
+                ts_ls = {
+                    -- false means do not include any extra info,
+                    -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
+                    extra_info_hl = "@comment",
+                },
+                vtsls = {
+                    -- false means do not include any extra info,
+                    -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
+                    extra_info_hl = "@comment",
+                },
+                ["rust-analyzer"] = {
+                    -- Such as (as Iterator), (use std::io).
+                    extra_info_hl = "@comment",
+                    -- Similar to the same setting of gopls.
+                    align_type_to_right = true,
+                    -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
+                    preserve_type_when_truncate = true,
+                },
+                clangd = {
+                    -- Such as "From <stdio.h>".
+                    extra_info_hl = "@comment",
+                    -- Similar to the same setting of gopls.
+                    align_type_to_right = true,
+                    -- the hl group of leading dot of "•std::filesystem::permissions(..)"
+                    import_dot_hl = "@comment",
+                    -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
+                    preserve_type_when_truncate = true,
+                },
+                zls = {
+                    -- Similar to the same setting of gopls.
+                    align_type_to_right = true,
+                },
+                roslyn = {
+                    extra_info_hl = "@comment",
+                },
+                dartls = {
+                    extra_info_hl = "@comment",
+                },
+                -- The same applies to pyright/pylance
+                basedpyright = {
+                    -- It is usually import path such as "os"
+                    extra_info_hl = "@comment",
+                },
+                pylsp = {
+                    extra_info_hl = "@comment",
+                    -- Dim the function argument area, which is the main
+                    -- difference with pyright.
+                    arguments_hl = "@comment",
+                },
+                -- If true, try to highlight "not supported" languages.
+                fallback = true,
+                -- this will be applied to label description for unsupport languages
+                fallback_extra_info_hl = "@comment",
+            },
+            -- If the built-in logic fails to find a suitable highlight group for a label,
+            -- this highlight is applied to the label.
+            fallback_highlight = "@variable",
+            -- If provided, the plugin truncates the final displayed text to
+            -- this width (measured in display cells). Any highlights that extend
+            -- beyond the truncation point are ignored. When set to a float
+            -- between 0 and 1, it'll be treated as percentage of the width of
+            -- the window: math.floor(max_width * vim.api.nvim_win_get_width(0))
+            -- Default 60.
+            max_width = 60,
+        })
+    end,
+  },
   --toggleterm
   {
     "akinsho/toggleterm.nvim",
@@ -78,7 +357,7 @@ local plugin_specs = {
       })
     end,
   },
-  -- Mason 
+  -- Mason
   {
     "williamboman/mason.nvim",
     opts = {
@@ -90,6 +369,9 @@ local plugin_specs = {
   {
     "jose-elias-alvarez/null-ls.nvim",
     branch = "main",
+  },
+  {
+    "stevearc/conform.nvim",
   },
   -- Nvim Navic
   {
@@ -226,11 +508,44 @@ local plugin_specs = {
   },
   {
     "MeanderingProgrammer/markdown.nvim",
-    main = "render-markdown",
+    -- main = "render-markdown",
     opts = {},
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    commit = "a03ed82dfdeb14980093609ffe94c171ace8059",
+    config = function()
+      require('render-markdown').setup({
+        completions = { coq = { enabled = true, } },
+      })
+    end,
   },
   -- A list of colorscheme plugin you may want to try. Find what suits you.
+  {
+    "HiPhish/rainbow-delimiters.nvim",
+    config = function()
+      local rainbow_delimiters = require 'rainbow-delimiters'
+
+      vim.g.rainbow_delimiters = {
+        strategy = {
+          [''] = rainbow_delimiters.strategy['global'],
+          vim = rainbow_delimiters.strategy['local'],
+        },
+        query = {
+          [''] = 'rainbow-delimiters',
+          lua = 'rainbow-blocks',
+        },
+        highlight = {
+          'RainbowDelimiterRed',
+          'RainbowDelimiterYellow',
+          'RainbowDelimiterBlue',
+          'RainbowDelimiterOrange',
+          'RainbowDelimiterGreen',
+          'RainbowDelimiterViolet',
+          'RainbowDelimiterCyan',
+        },
+      }
+    end
+  },
+  { 'norcalli/nvim-colorizer.lua' },
   { "navarasu/onedark.nvim", lazy = true },
   { "sainnhe/edge", lazy = true },
   { "sainnhe/sonokai", lazy = true },
@@ -284,6 +599,7 @@ local plugin_specs = {
       require("config.indent-blankline")
     end,
   },
+  { 'lewis6991/impatient.nvim' },
   {
     "luukvbaal/statuscol.nvim",
     opts = {},
@@ -756,7 +1072,7 @@ local plugin_specs = {
       words = { enabled = true },
       styles = {
         notification = {
-          -- wo = { wrap = true } -- Wrap notifications
+          wo = { wrap = true } -- Wrap notifications
         }
       }
     },
