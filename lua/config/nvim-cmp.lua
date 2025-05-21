@@ -81,7 +81,7 @@ cmp.setup {
 
       return vim_item
     end,
-  }
+  },
 }
 
 cmp.setup.filetype("tex", {

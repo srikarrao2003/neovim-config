@@ -171,7 +171,7 @@ local plugin_specs = {
       local signature_config = {
         -- General settings
         debug = false,                      -- Set to true for debug logging
-        log_path = vim.fn.stdpath("cache") .. "/lsp_signature.log",
+        log_path = vim.fn.stdpath("cache") .. "~/lsp_signature.log",
         verbose = false,                    -- Show verbose log messages
         
         -- Floating window settings
@@ -211,8 +211,6 @@ local plugin_specs = {
       -- Initialize the plugin
       require("lsp_signature").setup(signature_config)
       
-      -- Setup custom keymaps
-      setup_keymaps()
       
       -- Setup signature on LSP attach
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -507,14 +505,14 @@ local plugin_specs = {
     end,
   },
   {
-    "MeanderingProgrammer/markdown.nvim",
+    "MeanderingProgrammer/render-markdown.nvim",
     -- main = "render-markdown",
     opts = {},
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
-    commit = "a03ed82dfdeb14980093609ffe94c171ace8059",
+    commit = "a03ed82dfdeb1a4980093609ffe94c171ace8059",
     config = function()
       require('render-markdown').setup({
-        completions = { coq = { enabled = true, } },
+        completions = { coq = { enabled = true } },
       })
     end,
   },
