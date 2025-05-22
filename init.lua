@@ -69,6 +69,12 @@ vim.api.nvim_create_autocmd('VimEnter', {
   end
 })
 
+vim.api.nvim_create_autocmd("BufNewFile", {
+  pattern = "*.cpp",
+  command = "0r ~/.config/nvim/templates/main.cpp"
+})
+
+
 -- Enable mouse
 vim.opt.mouse = "a"
 vim.o.scroll = 20
