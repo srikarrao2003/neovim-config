@@ -53,10 +53,10 @@ vim.cmd([[
 ]])
 
 vim.cmd([[
-  highlight RainbowDelimiterRed guifg=#E06C75 
+  highlight RainbowDelimiterRed guifg=#E06C75
   highlight RainbowDelimiterYellow guifg=#E5C07B
-  highlight RainbowDelimiterBlue guifg=#61AFEF 
-  highlight RainbowDelimiterOrange guifg=#D19A66 
+  highlight RainbowDelimiterBlue guifg=#61AFEF
+  highlight RainbowDelimiterOrange guifg=#D19A66
   highlight RainbowDelimiterGreen guifg=#98C380
   highlight RainbowDelimiterViolet guifg=#C678DD
   highlight RainbowDelimiterCyan guifg=#56B6C2
@@ -69,9 +69,14 @@ vim.api.nvim_create_autocmd('VimEnter', {
   end
 })
 
-vim.api.nvim_create_autocmd("BufNewFile", {
-  pattern = "*.cpp",
-  command = "0r ~/.config/nvim/templates/main.cpp"
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "cpp",
+  callback = function()
+    vim.keymap.set("n", "<leader>a", function()
+      local template_path = vim.fn.expand("~/.config/nvim/templates/cpp_boilerplate.cpp")
+      vim.cmd("0r " .. template_path)
+    end, { buffer = true, desc = "Insert C++ Boilerplate" })
+  end,
 })
 
 
