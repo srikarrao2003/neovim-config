@@ -75,7 +75,8 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("n", "<leader>a", function()
       local template_path = vim.fn.expand("~/.config/nvim/templates/cpp_boilerplate.cpp")
       vim.cmd("0r " .. template_path)
-    end, { buffer = true, desc = "Insert C++ Boilerplate" })
+      vim.cmd("w")
+    end, { buffer = true, desc = "Insert and Save C++ Boilerplate" })
   end,
 })
 
