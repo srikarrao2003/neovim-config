@@ -253,13 +253,13 @@ end, { desc = "show cursor" })
 --toggleterm mappings
 
 --Open Float Terminal
-vim.api.nvim_set_keymap('n','<Space>t',"<cmd>ToggleTerm direction=float<cr>",
-{noremap = true, silent = true}
+vim.api.nvim_set_keymap('n', '<Space>t', "<cmd>ToggleTerm direction=float<cr>",
+  { noremap = true, silent = true }
 )
 
 -- Terminal specific keymaps
 function _G.set_terminal_keymaps()
-  local opts = {buffer = true}
+  local opts = { buffer = true }
   -- Escape terminal mode to normal mode with Esc
   vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], opts)
 end
@@ -306,27 +306,36 @@ vim.keymap.set({ 'n', 'x' }, 'd', '"_d', { desc = "Delete without yanking" })
 -- Telescope mappings
 
 -- Key mappings for fuzzy searching in floating windows
-vim.api.nvim_set_keymap('n', '<Space>ff', [[:lua require('telescope.builtin').find_files({ layout_strategy = 'vertical' })<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Space>fh', [[:lua require('telescope.builtin').help_tags({ layout_strategy = 'vertical' })<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Space>fg', [[:lua require('telescope.builtin').live_grep({ layout_strategy = 'vertical' })<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Space>ff',
+  [[:lua require('telescope.builtin').find_files({ layout_strategy = 'vertical' })<CR>]],
+  { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Space>fh',
+  [[:lua require('telescope.builtin').help_tags({ layout_strategy = 'vertical' })<CR>]],
+  { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Space>fg',
+  [[:lua require('telescope.builtin').live_grep({ layout_strategy = 'vertical' })<CR>]],
+  { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Space>ft', ':Leaderf bufTag --popup<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Space>fd', [[:lua require('telescope.builtin').buffers({ layout_strategy = 'vertical' })<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Space>fw', [[:lua require('telescope.builtin').current_buffer_fuzzy_find({ layout_strategy = 'vertical' })<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Space>fd',
+  [[:lua require('telescope.builtin').buffers({ layout_strategy = 'vertical' })<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Space>fw',
+  [[:lua require('telescope.builtin').current_buffer_fuzzy_find({ layout_strategy = 'vertical' })<CR>]],
+  { noremap = true, silent = true })
 
 
 -- Diagnostics
 -- vim.keymap.set('n', '<Space>x', vim.diagnostic.open_float, opts)                 -- Show diagnostics
 -- vim.keymap.set('n', 'xN', vim.diagnostic.goto_prev, opts)                         -- Previous diagnostic
-vim.keymap.set('n', '<Space>x', vim.diagnostic.goto_next, opts)                         -- Next diagnostic
+vim.keymap.set('n', '<Space>x', vim.diagnostic.goto_next, opts) -- Next diagnostic
 
 --Lazygit
-vim.keymap.set('n','<Space>gl', ":LazyGit<CR>", { noremap = true, silent = true })
+vim.keymap.set('n', '<Space>gl', ":LazyGit<CR>", { noremap = true, silent = true })
 
 --Code action
 vim.keymap.set('n', '<Space>la', vim.lsp.buf.code_action, { desc = 'Code Action' })
 
 --Telescope diagnostics
-vim.keymap.set('n','<Space>ld',"<cmd>Telescope diagnostics<CR>",{ desc = 'Telescope diagnostics'})
+vim.keymap.set('n', '<Space>ld', "<cmd>Telescope diagnostics<CR>", { desc = 'Telescope diagnostics' })
 
 
 -- Keymaps for improved horizontal & vertical movement in Neovim
@@ -339,8 +348,8 @@ keymap("n", "<C-u>", "<C-u>zz", opts) -- Scroll half-page up & center
 
 
 -- Horizontal movements
-keymap("n", "H", "^", opts) -- Move to first non-blank character
-keymap("n", "L", "$", opts) -- Move to end of line
+keymap("n", "H", "^", opts)  -- Move to first non-blank character
+keymap("n", "L", "$", opts)  -- Move to end of line
 keymap("n", "W", "5w", opts) -- Move 5 words forward
 keymap("n", "B", "5b", opts) -- Move 5 words backward
 
@@ -359,29 +368,29 @@ end, { desc = "Print full file path" })
 local function replace_word_in_workspace()
   -- Get the word under cursor
   local word = vim.fn.expand('<cword>')
-  
+
   -- Prompt for the replacement
   local replacement = vim.fn.input('Replace "' .. word .. '" with: ')
-  
+
   -- If user cancelled or provided empty replacement, abort
   if replacement == '' then
     vim.notify('Replacement cancelled', vim.log.levels.INFO)
     return
   end
-  
+
   -- Confirm before proceeding
   local confirm = vim.fn.input('Replace all occurrences of "' .. word .. '" with "' .. replacement .. '"? (y/n): ')
   if confirm:lower() ~= 'y' then
     vim.notify('Replacement cancelled', vim.log.levels.INFO)
     return
   end
-  
+
   -- Use telescope to search for the word in the workspace and create a quickfix list
   vim.cmd('Telescope grep_string search=' .. word)
-  
+
   -- Wait for user to populate the quickfix list by selecting files in telescope
   vim.notify('Select files in Telescope and press <C-q> to add to quickfix list, then press <Esc>', vim.log.levels.INFO)
-  
+
   -- After user has populated quickfix list, set up an autocmd to perform the replacement
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "qf",
@@ -397,7 +406,8 @@ local function replace_word_in_workspace()
 end
 
 -- Map the function to <space>re
-vim.keymap.set('n', '<space>re', replace_word_in_workspace, { noremap = true, silent = true, desc = 'Replace word in workspace' })
+vim.keymap.set('n', '<space>re', replace_word_in_workspace,
+  { noremap = true, silent = true, desc = 'Replace word in workspace' })
 
 -- Gen
 vim.keymap.set({ 'n', 'v' }, '<space>w', ':Gen<CR>')
@@ -411,7 +421,7 @@ vim.api.nvim_set_keymap('n', '<C-j>', '<cmd>TmuxNavigateDown<cr>', { noremap = t
 -- move across function setting
 vim.api.nvim_set_keymap('n', 'm', '}', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'M', '{', { noremap = true, silent = true })
-vim.keymap.set({'n', 'v'}, 't', '%')
+vim.keymap.set({ 'n', 'v' }, 't', '%')
 
 -- copy line
 vim.api.nvim_set_keymap('n', 'yL', 'y$', { noremap = true, silent = true })
@@ -419,5 +429,51 @@ vim.api.nvim_set_keymap('n', 'yL', 'y$', { noremap = true, silent = true })
 vim.keymap.set('n', 'o', 'o <BS>', { noremap = true })
 
 -- rename across project
-vim.keymap.set("n", "<space>rw", "<cmd>Lspsaga rename<CR>", {desc = "Rename symbol"} )
-vim.keymap.set("n", "<space>R", "<cmd>Lspsaga rename ++project<CR>", {desc = "Rename symbol (project-wide)"} )
+vim.keymap.set("n", "<space>rw", "<cmd>Lspsaga rename<CR>", { desc = "Rename symbol" })
+vim.keymap.set("n", "<space>R", "<cmd>Lspsaga rename ++project<CR>", { desc = "Rename symbol (project-wide)" })
+
+-- competitive programming
+-- Run tests
+vim.api.nvim_set_keymap("n", "<leader>r", "<cmd>CompetiTest run<CR>", opts)
+-- vim.api.nvim_set_keymap("i", "<F9>", "<ESC><cmd>CompetiTest run<CR>", opts)
+
+-- Add testcase
+vim.api.nvim_set_keymap("n", "<space>aa", "<cmd>CompetiTest add_testcase<CR>", opts)
+
+-- Edit testcase
+vim.api.nvim_set_keymap("n", "<space>ae", "<cmd>CompetiTest edit_testcase<CR>", opts)
+
+-- Delete testcase
+vim.api.nvim_set_keymap("n", "<space>ad", "<cmd>CompetiTest delete_testcase<CR>", opts)
+
+-- Create a template file
+vim.api.nvim_set_keymap("n", "<space>ac", "<cmd>CompetiTest template<CR>", opts)
+
+-- Show results
+vim.api.nvim_set_keymap("n", "<space>ar", "<cmd>CompetiTest show_ui<CR>", opts)
+
+-- Command to quickly edit competitest configuration
+vim.api.nvim_create_user_command('CompetiTestEditConfig', function()
+  vim.cmd('edit ' .. vim.fn.stdpath("config") .. '/lua/competitest.lua')
+end, {})
+
+-- Optional: Create an easy command to add a predefined template
+vim.api.nvim_create_user_command('CompetitestAddTemplate', function(opts)
+  local template_name = opts.args
+  if template_name == "" then
+    print("Please provide a template name")
+    return
+  end
+
+  local template_dir = vim.fn.stdpath("config") .. "/cp_templates"
+  if vim.fn.isdirectory(template_dir) == 0 then
+    vim.fn.mkdir(template_dir, "p")
+  end
+
+  vim.cmd('edit ' .. template_dir .. '/' .. template_name)
+end, {
+  nargs = 1,
+  complete = function(ArgLead, CmdLine, CursorPos)
+    return { "main.cpp", "main.py", "main.java", "main.rs", "main.c" }
+  end
+})

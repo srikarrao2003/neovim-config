@@ -170,48 +170,48 @@ local plugin_specs = {
     config = function()
       local signature_config = {
         -- General settings
-        debug = false,                      -- Set to true for debug logging
+        debug = false,   -- Set to true for debug logging
         log_path = vim.fn.stdpath("cache") .. "~/lsp_signature.log",
-        verbose = false,                    -- Show verbose log messages
-        
+        verbose = false, -- Show verbose log messages
+
         -- Floating window settings
-        bind = true,                        -- Bind to keymaps if provided
-        doc_lines = 10,                     -- Maximum number of lines in the signature help window
-        max_height = 12,                    -- Max height of signature floating window
-        max_width = 80,                     -- Max width of signature floating window
-        wrap = true,                        -- Wrap long lines
-        floating_window = true,             -- Show floating window for signature
+        bind = true,                           -- Bind to keymaps if provided
+        doc_lines = 10,                        -- Maximum number of lines in the signature help window
+        max_height = 12,                       -- Max height of signature floating window
+        max_width = 80,                        -- Max width of signature floating window
+        wrap = true,                           -- Wrap long lines
+        floating_window = true,                -- Show floating window for signature
         floating_window_above_cur_line = true, -- Try to place the floating above the current line when possible
-        floating_window_off_x = 1,          -- X offset of floating window
-        floating_window_off_y = 0,          -- Y offset of floating window (negative value puts it above the cursor)
-        
-        -- Visual settings  
-        fix_pos = false,                    -- Fix floating window position
-        hint_enable = true,                 -- Virtual text hint
-        hint_prefix = "🔍 ",                -- Change to a simpler character if needed: "🐼 " or "➡️ " or "» "
-        hint_scheme = "String",             -- Color scheme for virtual text
+        floating_window_off_x = 1,             -- X offset of floating window
+        floating_window_off_y = 0,             -- Y offset of floating window (negative value puts it above the cursor)
+
+        -- Visual settings
+        fix_pos = false, -- Fix floating window position
+        hint_enable = true, -- Virtual text hint
+        hint_prefix = "🔍 ", -- Change to a simpler character if needed: "🐼 " or "➡️ " or "» "
+        hint_scheme = "String", -- Color scheme for virtual text
         hint_inline = function() return false end, -- When to show inline hints
         hi_parameter = "LspSignatureActiveParameter", -- Color for active parameter
         handler_opts = {
-          border = "rounded"                -- "shadow", "none", or "rounded"
+          border = "rounded" -- "shadow", "none", or "rounded"
         },
-        
+
         -- Always show signature help when typing '(' or ','
-        always_trigger = false,             -- Show signature on new line and space
-        auto_close_after = nil,             -- Close signature floating window after n seconds
-        check_completion_visible = true,    -- Don't show if completion menu is visible
-        
+        always_trigger = false,          -- Show signature on new line and space
+        auto_close_after = nil,          -- Close signature floating window after n seconds
+        check_completion_visible = true, -- Don't show if completion menu is visible
+
         -- Keymaps
-        toggle_key = "<C-k>",               -- Toggle signature on and off with Ctrl-k
+        toggle_key = "<C-k>",                     -- Toggle signature on and off with Ctrl-k
         toggle_key_flip_floatwin_setting = false, -- Flip floatwin setting when toggle_key is triggered
-        select_signature_key = "<M-n>",     -- Cycle to next signature with Alt-n
-        move_cursor_key = nil,              -- Move cursor to signature with these keys
+        select_signature_key = "<M-n>",           -- Cycle to next signature with Alt-n
+        move_cursor_key = nil,                    -- Move cursor to signature with these keys
       }
-      
+
       -- Initialize the plugin
       require("lsp_signature").setup(signature_config)
-      
-      
+
+
       -- Setup signature on LSP attach
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("LspSignatureSetup", { clear = true }),
@@ -233,98 +233,98 @@ local plugin_specs = {
   {
     "xzbdmw/colorful-menu.nvim",
     config = function()
-        -- You don't need to set these options.
-        require("colorful-menu").setup({
-            ls = {
-                lua_ls = {
-                    -- Maybe you want to dim arguments a bit.
-                    arguments_hl = "@comment",
-                },
-                gopls = {
-                    -- By default, we render variable/function's type in the right most side,
-                    -- to make them not to crowd together with the original label.
+      -- You don't need to set these options.
+      require("colorful-menu").setup({
+        ls = {
+          lua_ls = {
+            -- Maybe you want to dim arguments a bit.
+            arguments_hl = "@comment",
+          },
+          gopls = {
+            -- By default, we render variable/function's type in the right most side,
+            -- to make them not to crowd together with the original label.
 
-                    -- when true:
-                    -- foo             *Foo
-                    -- ast         "go/ast"
+            -- when true:
+            -- foo             *Foo
+            -- ast         "go/ast"
 
-                    -- when false:
-                    -- foo *Foo
-                    -- ast "go/ast"
-                    align_type_to_right = true,
-                    -- When true, label for field and variable will format like "foo: Foo"
-                    -- instead of go's original syntax "foo Foo". If align_type_to_right is
-                    -- true, this option has no effect.
-                    add_colon_before_type = false,
-                    -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
-                    preserve_type_when_truncate = true,
-                },
-                -- for lsp_config or typescript-tools
-                ts_ls = {
-                    -- false means do not include any extra info,
-                    -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
-                    extra_info_hl = "@comment",
-                },
-                vtsls = {
-                    -- false means do not include any extra info,
-                    -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
-                    extra_info_hl = "@comment",
-                },
-                ["rust-analyzer"] = {
-                    -- Such as (as Iterator), (use std::io).
-                    extra_info_hl = "@comment",
-                    -- Similar to the same setting of gopls.
-                    align_type_to_right = true,
-                    -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
-                    preserve_type_when_truncate = true,
-                },
-                clangd = {
-                    -- Such as "From <stdio.h>".
-                    extra_info_hl = "@comment",
-                    -- Similar to the same setting of gopls.
-                    align_type_to_right = true,
-                    -- the hl group of leading dot of "•std::filesystem::permissions(..)"
-                    import_dot_hl = "@comment",
-                    -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
-                    preserve_type_when_truncate = true,
-                },
-                zls = {
-                    -- Similar to the same setting of gopls.
-                    align_type_to_right = true,
-                },
-                roslyn = {
-                    extra_info_hl = "@comment",
-                },
-                dartls = {
-                    extra_info_hl = "@comment",
-                },
-                -- The same applies to pyright/pylance
-                basedpyright = {
-                    -- It is usually import path such as "os"
-                    extra_info_hl = "@comment",
-                },
-                pylsp = {
-                    extra_info_hl = "@comment",
-                    -- Dim the function argument area, which is the main
-                    -- difference with pyright.
-                    arguments_hl = "@comment",
-                },
-                -- If true, try to highlight "not supported" languages.
-                fallback = true,
-                -- this will be applied to label description for unsupport languages
-                fallback_extra_info_hl = "@comment",
-            },
-            -- If the built-in logic fails to find a suitable highlight group for a label,
-            -- this highlight is applied to the label.
-            fallback_highlight = "@variable",
-            -- If provided, the plugin truncates the final displayed text to
-            -- this width (measured in display cells). Any highlights that extend
-            -- beyond the truncation point are ignored. When set to a float
-            -- between 0 and 1, it'll be treated as percentage of the width of
-            -- the window: math.floor(max_width * vim.api.nvim_win_get_width(0))
-            -- Default 60.
-            max_width = 60,
-        })
+            -- when false:
+            -- foo *Foo
+            -- ast "go/ast"
+            align_type_to_right = true,
+            -- When true, label for field and variable will format like "foo: Foo"
+            -- instead of go's original syntax "foo Foo". If align_type_to_right is
+            -- true, this option has no effect.
+            add_colon_before_type = false,
+            -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
+            preserve_type_when_truncate = true,
+          },
+          -- for lsp_config or typescript-tools
+          ts_ls = {
+            -- false means do not include any extra info,
+            -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
+            extra_info_hl = "@comment",
+          },
+          vtsls = {
+            -- false means do not include any extra info,
+            -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
+            extra_info_hl = "@comment",
+          },
+          ["rust-analyzer"] = {
+            -- Such as (as Iterator), (use std::io).
+            extra_info_hl = "@comment",
+            -- Similar to the same setting of gopls.
+            align_type_to_right = true,
+            -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
+            preserve_type_when_truncate = true,
+          },
+          clangd = {
+            -- Such as "From <stdio.h>".
+            extra_info_hl = "@comment",
+            -- Similar to the same setting of gopls.
+            align_type_to_right = true,
+            -- the hl group of leading dot of "•std::filesystem::permissions(..)"
+            import_dot_hl = "@comment",
+            -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
+            preserve_type_when_truncate = true,
+          },
+          zls = {
+            -- Similar to the same setting of gopls.
+            align_type_to_right = true,
+          },
+          roslyn = {
+            extra_info_hl = "@comment",
+          },
+          dartls = {
+            extra_info_hl = "@comment",
+          },
+          -- The same applies to pyright/pylance
+          basedpyright = {
+            -- It is usually import path such as "os"
+            extra_info_hl = "@comment",
+          },
+          pylsp = {
+            extra_info_hl = "@comment",
+            -- Dim the function argument area, which is the main
+            -- difference with pyright.
+            arguments_hl = "@comment",
+          },
+          -- If true, try to highlight "not supported" languages.
+          fallback = true,
+          -- this will be applied to label description for unsupport languages
+          fallback_extra_info_hl = "@comment",
+        },
+        -- If the built-in logic fails to find a suitable highlight group for a label,
+        -- this highlight is applied to the label.
+        fallback_highlight = "@variable",
+        -- If provided, the plugin truncates the final displayed text to
+        -- this width (measured in display cells). Any highlights that extend
+        -- beyond the truncation point are ignored. When set to a float
+        -- between 0 and 1, it'll be treated as percentage of the width of
+        -- the window: math.floor(max_width * vim.api.nvim_win_get_width(0))
+        -- Default 60.
+        max_width = 60,
+      })
     end,
   },
   --toggleterm
@@ -414,7 +414,7 @@ local plugin_specs = {
   -- Python-related text object
   { "jeetsukumaran/vim-pythonsense", ft = { "python" } },
 
-  { "machakann/vim-swap", event = "VeryLazy" },
+  { "machakann/vim-swap",            event = "VeryLazy" },
 
   -- IDE for Lisp
   -- 'kovisoft/slimv'
@@ -544,14 +544,14 @@ local plugin_specs = {
     end
   },
   { 'norcalli/nvim-colorizer.lua' },
-  { "navarasu/onedark.nvim", lazy = true },
-  { "sainnhe/edge", lazy = true },
-  { "sainnhe/sonokai", lazy = true },
-  { "sainnhe/gruvbox-material", lazy = true },
-  { "sainnhe/everforest", lazy = true },
-  { "EdenEast/nightfox.nvim", lazy = true },
-  { "catppuccin/nvim", name = "catppuccin", lazy = true },
-  { "olimorris/onedarkpro.nvim", lazy = true },
+  { "navarasu/onedark.nvim",       lazy = true },
+  { "sainnhe/edge",                lazy = true },
+  { "sainnhe/sonokai",             lazy = true },
+  { "sainnhe/gruvbox-material",    lazy = true },
+  { "sainnhe/everforest",          lazy = true },
+  { "EdenEast/nightfox.nvim",      lazy = true },
+  { "catppuccin/nvim",             name = "catppuccin", lazy = true },
+  { "olimorris/onedarkpro.nvim",   lazy = true },
   { "marko-cerovac/material.nvim", lazy = true },
   {
     "rockyzhang24/arctic.nvim",
@@ -559,7 +559,7 @@ local plugin_specs = {
     name = "arctic",
     branch = "v2",
   },
-  { "rebelot/kanagawa.nvim", lazy = true },
+  { "rebelot/kanagawa.nvim",       lazy = true },
   { "nvim-tree/nvim-web-devicons", event = "VeryLazy" },
 
   {
@@ -631,7 +631,7 @@ local plugin_specs = {
     opts = {},
     init = function()
       vim.o.foldcolumn = "1" -- '0' is not bad
-      vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+      vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
     end,
@@ -668,7 +668,7 @@ local plugin_specs = {
       end
     end,
     dependencies = { "nvim-lua/plenary.nvim" },
-    config = true, -- default settings
+    config = true,      -- default settings
     submodules = false, -- not needed, submodules are required only for tests
   },
 
@@ -687,9 +687,13 @@ local plugin_specs = {
   -- },
 
   -- Snippet engine and snippet template
-  { "SirVer/ultisnips", dependencies = {
-    "honza/vim-snippets",
-  }, event = "InsertEnter" },
+  {
+    "SirVer/ultisnips",
+    dependencies = {
+      "honza/vim-snippets",
+    },
+    event = "InsertEnter"
+  },
 
   -- Automatic insertion and deletion of a pair of characters
   {
@@ -699,13 +703,13 @@ local plugin_specs = {
   },
 
   -- Comment plugin
-  { "tpope/vim-commentary", event = "VeryLazy" },
+  { "tpope/vim-commentary",   event = "VeryLazy" },
 
   -- Multiple cursor plugin like Sublime Text?
   -- 'mg979/vim-visual-multi'
 
   -- Autosave files on certain events
-  { "907th/vim-auto-save", event = "InsertEnter" },
+  { "907th/vim-auto-save",    event = "InsertEnter" },
 
   -- Show undo history visually
   { "simnalamburt/vim-mundo", cmd = { "MundoToggle", "MundoShow" } },
@@ -723,10 +727,10 @@ local plugin_specs = {
   },
 
   -- Handy unix command inside Vim (Rename, Move etc.)
-  { "tpope/vim-eunuch", cmd = { "Rename", "Delete" } },
+  { "tpope/vim-eunuch",          cmd = { "Rename", "Delete" } },
 
   -- Repeat vim motions
-  { "tpope/vim-repeat", event = "VeryLazy" },
+  { "tpope/vim-repeat",          event = "VeryLazy" },
 
   { "nvim-zh/better-escape.vim", event = { "InsertEnter" } },
 
@@ -753,7 +757,7 @@ local plugin_specs = {
   },
 
   -- Auto format tools
-  { "sbdchd/neoformat", cmd = { "Neoformat" } },
+  { "sbdchd/neoformat",          cmd = { "Neoformat" } },
 
   -- Git command inside vim
   {
@@ -765,8 +769,8 @@ local plugin_specs = {
   },
 
   -- Better git log display
-  { "rbong/vim-flog", cmd = { "Flog" } },
-  { "akinsho/git-conflict.nvim", version = "*", config = true },
+  { "rbong/vim-flog",            cmd = { "Flog" } },
+  { "akinsho/git-conflict.nvim", version = "*",        config = true },
   {
     "ruifm/gitlinker.nvim",
     event = "User InGitRepo",
@@ -796,13 +800,13 @@ local plugin_specs = {
   },
 
   -- Another markdown plugin
-  { "preservim/vim-markdown", ft = { "markdown" } },
+  { "preservim/vim-markdown",           ft = { "markdown" } },
 
   -- Faster footnote generation
   { "vim-pandoc/vim-markdownfootnotes", ft = { "markdown" } },
 
   -- Vim tabular plugin for manipulate tabular, required by markdown plugins
-  { "godlygeek/tabular", cmd = { "Tabularize" } },
+  { "godlygeek/tabular",                cmd = { "Tabularize" } },
 
   -- Markdown previewing (only for Mac and Windows)
   {
@@ -828,14 +832,14 @@ local plugin_specs = {
     ft = { "markdown" },
   },
 
-  { "chrisbra/unicode.vim", event = "VeryLazy" },
+  { "chrisbra/unicode.vim",            event = "VeryLazy" },
 
   -- Additional powerful text object for vim, this plugin should be studied
   -- carefully to use its full power
-  { "wellle/targets.vim", event = "VeryLazy" },
+  { "wellle/targets.vim",              event = "VeryLazy" },
 
   -- Plugin to manipulate character pairs quickly
-  { "machakann/vim-sandwich", event = "VeryLazy" },
+  { "machakann/vim-sandwich",          event = "VeryLazy" },
 
   -- Add indent object for vim (useful for languages like Python)
   { "michaeljsmith/vim-indent-object", event = "VeryLazy" },
@@ -873,12 +877,12 @@ local plugin_specs = {
   },
 
   -- Modern matchit implementation
-  { "andymass/vim-matchup", event = "BufRead" },
-  { "tpope/vim-scriptease", cmd = { "Scriptnames", "Messages", "Verbose" } },
+  { "andymass/vim-matchup",     event = "BufRead" },
+  { "tpope/vim-scriptease",     cmd = { "Scriptnames", "Messages", "Verbose" } },
 
   -- Asynchronous command execution
-  { "skywind3000/asyncrun.vim", lazy = true, cmd = { "AsyncRun" } },
-  { "cespare/vim-toml", ft = { "toml" }, branch = "main" },
+  { "skywind3000/asyncrun.vim", lazy = true,                                   cmd = { "AsyncRun" } },
+  { "cespare/vim-toml",         ft = { "toml" },                               branch = "main" },
 
   -- Edit text area in browser using nvim
   {
@@ -918,7 +922,7 @@ local plugin_specs = {
   },
 
   -- Session management plugin
-  { "tpope/vim-obsession", cmd = "Obsession" },
+  { "tpope/vim-obsession",   cmd = "Obsession" },
 
   {
     "ojroques/vim-oscyank",
@@ -1019,22 +1023,22 @@ local plugin_specs = {
     -- Plugin configuration
     config = function()
       -- Basic settings
-      vim.g.neoman_find_window = "vnew"  -- Open man pages in vertical split
-      vim.g.neoman_default_mappings = 1   -- Enable default key mappings
-      
+      vim.g.neoman_find_window = "vnew" -- Open man pages in vertical split
+      vim.g.neoman_default_mappings = 1 -- Enable default key mappings
+
       -- Key mappings for man pages
       vim.api.nvim_set_keymap('n', 'K', ':Man<CR>', { noremap = true, silent = true })
       vim.api.nvim_set_keymap('n', '<Space>m', ':vertical Man<CR>', { noremap = true, silent = true })
-      
+
       -- Custom commands
       vim.cmd([[
         " Open man page in vertical split
         command! -nargs=* -complete=shellcmd Vman vertical Man <args>
-        
+
         " Open man page in horizontal split
         command! -nargs=* -complete=shellcmd Sman horizontal Man <args>
       ]])
-      
+
       -- Highlight settings
       vim.cmd([[
         augroup man_settings
@@ -1076,71 +1080,73 @@ local plugin_specs = {
     },
     keys = {
       -- Top Pickers & Explorer
-      { "<space><space>", function() Snacks.picker.smart() end, desc = "Smart Find Files" },
-      { "<space>:", function() Snacks.picker.command_history() end, desc = "Command History" },
-      { "<space>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
+      { "<space><space>", function() Snacks.picker.smart() end,                                   desc = "Smart Find Files" },
+      { "<space>:",       function() Snacks.picker.command_history() end,                         desc = "Command History" },
+      { "<space>n",       function() Snacks.picker.notifications() end,                           desc = "Notification History" },
       -- { "<space>e", function() Snacks.explorer() end, desc = "File Explorer" },
       -- find
       -- { "<space>fd", function() Snacks.picker.buffers() end, desc = "Buffers" },
-      { "<space>fc", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },
+      { "<space>fc",      function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },
       -- { "<space>ff", function() Snacks.picker.files() end, desc = "Find Files" },
-      { "<space>fr", function() Snacks.picker.recent() end, desc = "Recent" },
+      { "<space>fr",      function() Snacks.picker.recent() end,                                  desc = "Recent" },
       -- Grep
-      { "<space>sb", function() Snacks.picker.lines() end, desc = "Buffer Lines" },
-      { "<space>sB", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers" },
-      { "<space>sg", function() Snacks.picker.grep() end, desc = "Grep" },
-      { "<space>sw", function() Snacks.picker.grep_word() end, desc = "Visual selection or word", mode = { "n", "x" } },
+      { "<space>sb",      function() Snacks.picker.lines() end,                                   desc = "Buffer Lines" },
+      { "<space>sB",      function() Snacks.picker.grep_buffers() end,                            desc = "Grep Open Buffers" },
+      { "<space>sg",      function() Snacks.picker.grep() end,                                    desc = "Grep" },
+      { "<space>sw",      function() Snacks.picker.grep_word() end,                               desc = "Visual selection or word", mode = { "n", "x" } },
       -- search
-      { '<space>s"', function() Snacks.picker.registers() end, desc = "Registers" },
-      { '<space>s/', function() Snacks.picker.search_history() end, desc = "Search History" },
-      { "<space>sa", function() Snacks.picker.autocmds() end, desc = "Autocmds" },
-      { "<space>sb", function() Snacks.picker.lines() end, desc = "Buffer Lines" },
-      { "<space>sc", function() Snacks.picker.command_history() end, desc = "Command History" },
-      { "<space>sC", function() Snacks.picker.commands() end, desc = "Commands" },
-      { "<space>sd", function() Snacks.picker.diagnostics() end, desc = "Diagnostics" },
-      { "<space>sD", function() Snacks.picker.diagnostics_buffer() end, desc = "Buffer Diagnostics" },
-      { "<space>sh", function() Snacks.picker.help() end, desc = "Help Pages" },
-      { "<space>sH", function() Snacks.picker.highlights() end, desc = "Highlights" },
-      { "<space>si", function() Snacks.picker.icons() end, desc = "Icons" },
-      { "<space>sj", function() Snacks.picker.jumps() end, desc = "Jumps" },
-      { "<space>sk", function() Snacks.picker.keymaps() end, desc = "Keymaps" },
-      { "<space>sl", function() Snacks.picker.loclist() end, desc = "Location List" },
-      { "<space>sm", function() Snacks.picker.marks() end, desc = "Marks" },
-      { "<space>sM", function() Snacks.picker.man() end, desc = "Man Pages" },
-      { "<space>sp", function() Snacks.picker.lazy() end, desc = "Search for Plugin Spec" },
-      { "<space>sq", function() Snacks.picker.qflist() end, desc = "Quickfix List" },
-      { "<space>sR", function() Snacks.picker.resume() end, desc = "Resume" },
-      { "<space>su", function() Snacks.picker.undo() end, desc = "Undo History" },
-      { "<space>uC", function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
+      { '<space>s"',      function() Snacks.picker.registers() end,                               desc = "Registers" },
+      { '<space>s/',      function() Snacks.picker.search_history() end,                          desc = "Search History" },
+      { "<space>sa",      function() Snacks.picker.autocmds() end,                                desc = "Autocmds" },
+      { "<space>sb",      function() Snacks.picker.lines() end,                                   desc = "Buffer Lines" },
+      { "<space>sc",      function() Snacks.picker.command_history() end,                         desc = "Command History" },
+      { "<space>sC",      function() Snacks.picker.commands() end,                                desc = "Commands" },
+      { "<space>sd",      function() Snacks.picker.diagnostics() end,                             desc = "Diagnostics" },
+      { "<space>sD",      function() Snacks.picker.diagnostics_buffer() end,                      desc = "Buffer Diagnostics" },
+      { "<space>sh",      function() Snacks.picker.help() end,                                    desc = "Help Pages" },
+      { "<space>sH",      function() Snacks.picker.highlights() end,                              desc = "Highlights" },
+      { "<space>si",      function() Snacks.picker.icons() end,                                   desc = "Icons" },
+      { "<space>sj",      function() Snacks.picker.jumps() end,                                   desc = "Jumps" },
+      { "<space>sk",      function() Snacks.picker.keymaps() end,                                 desc = "Keymaps" },
+      { "<space>sl",      function() Snacks.picker.loclist() end,                                 desc = "Location List" },
+      { "<space>sm",      function() Snacks.picker.marks() end,                                   desc = "Marks" },
+      { "<space>sM",      function() Snacks.picker.man() end,                                     desc = "Man Pages" },
+      { "<space>sp",      function() Snacks.picker.lazy() end,                                    desc = "Search for Plugin Spec" },
+      { "<space>sq",      function() Snacks.picker.qflist() end,                                  desc = "Quickfix List" },
+      { "<space>sR",      function() Snacks.picker.resume() end,                                  desc = "Resume" },
+      { "<space>su",      function() Snacks.picker.undo() end,                                    desc = "Undo History" },
+      { "<space>uC",      function() Snacks.picker.colorschemes() end,                            desc = "Colorschemes" },
       -- LSP
-      { "<space>gd", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition" },
-      { "<space>gD", function() Snacks.picker.lsp_declarations() end, desc = "Goto Declaration" },
-      { "<space>gr", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
-      { "<space>gI", function() Snacks.picker.lsp_implementations() end, desc = "Goto Implementation" },
-      { "<space>gy", function() Snacks.picker.lsp_type_definitions() end, desc = "Goto T[y]pe Definition" },
-      { "<space>ss", function() Snacks.picker.lsp_symbols() end, desc = "LSP Symbols" },
-      { "<space>sS", function() Snacks.picker.lsp_workspace_symbols() end, desc = "LSP Workspace Symbols" },
+      { "<space>gd",      function() Snacks.picker.lsp_definitions() end,                         desc = "Goto Definition" },
+      { "<space>gD",      function() Snacks.picker.lsp_declarations() end,                        desc = "Goto Declaration" },
+      { "<space>gr",      function() Snacks.picker.lsp_references() end,                          nowait = true,                     desc = "References" },
+      { "<space>gI",      function() Snacks.picker.lsp_implementations() end,                     desc = "Goto Implementation" },
+      { "<space>gy",      function() Snacks.picker.lsp_type_definitions() end,                    desc = "Goto T[y]pe Definition" },
+      { "<space>ss",      function() Snacks.picker.lsp_symbols() end,                             desc = "LSP Symbols" },
+      { "<space>sS",      function() Snacks.picker.lsp_workspace_symbols() end,                   desc = "LSP Workspace Symbols" },
       -- Other
-      { "<space>z",  function() Snacks.zen() end, desc = "Toggle Zen Mode" },
-      { "<space>Z",  function() Snacks.zen.zoom() end, desc = "Toggle Zoom" },
-      { "<space>.",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
-      { "<space>S",  function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
-      { "<space>n",  function() Snacks.notifier.show_history() end, desc = "Notification History" },
-      { "<space>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
-      { "<space>cR", function() Snacks.rename.rename_file() end, desc = "Rename File" },
-      { "<space>gB", function() Snacks.gitbrowse() end, desc = "Git Browse", mode = { "n", "v" } },
-      { "<space>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
-      { "<space>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
-      { "<c-/>",      
-      function() 
-        Snacks.terminal({
-          shell = zsh_path,
-        }) 
-      end, 
-      desc = "Toggle Terminal" },
-      { "<c-_>",      function() Snacks.terminal() end, desc = "which_key_ignore" },
-      { "]]",         function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" } },
-      { "[[",         function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" } },
+      { "<space>z",       function() Snacks.zen() end,                                            desc = "Toggle Zen Mode" },
+      { "<space>Z",       function() Snacks.zen.zoom() end,                                       desc = "Toggle Zoom" },
+      { "<space>.",       function() Snacks.scratch() end,                                        desc = "Toggle Scratch Buffer" },
+      { "<space>S",       function() Snacks.scratch.select() end,                                 desc = "Select Scratch Buffer" },
+      { "<space>n",       function() Snacks.notifier.show_history() end,                          desc = "Notification History" },
+      { "<space>bd",      function() Snacks.bufdelete() end,                                      desc = "Delete Buffer" },
+      { "<space>cR",      function() Snacks.rename.rename_file() end,                             desc = "Rename File" },
+      { "<space>gB",      function() Snacks.gitbrowse() end,                                      desc = "Git Browse",               mode = { "n", "v" } },
+      { "<space>gg",      function() Snacks.lazygit() end,                                        desc = "Lazygit" },
+      { "<space>un",      function() Snacks.notifier.hide() end,                                  desc = "Dismiss All Notifications" },
+      {
+        "<c-/>",
+        function()
+          Snacks.terminal({
+            shell = zsh_path,
+          })
+        end,
+        desc = "Toggle Terminal"
+      },
+      { "<c-_>", function() Snacks.terminal() end,                desc = "which_key_ignore" },
+      { "]]",    function() Snacks.words.jump(vim.v.count1) end,  desc = "Next Reference",  mode = { "n", "t" } },
+      { "[[",    function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference",  mode = { "n", "t" } },
       {
         "<space>N",
         desc = "Neovim News",
@@ -1172,7 +1178,7 @@ local plugin_specs = {
             Snacks.debug.backtrace()
           end
           vim.print = _G.dd -- Override print to use snacks for `:=` command
-  
+
           -- Create some toggle mappings
           -- Snacks.toggle.option("spell", { name = "Spelling" }):map("<space>us")
           -- Snacks.toggle.option("wrap", { name = "Wrap" }):map("<space>uw")
@@ -1198,6 +1204,166 @@ local plugin_specs = {
   --   },
   -- },
   { "David-Kunz/gen.nvim" },
+  -- competitive programming
+  {
+    "xeluxee/competitest.nvim",
+    dependencies = "MunifTanjim/nui.nvim",
+    config = function()
+      require("competitest").setup({
+        -- Competitive programming companion plugins integration
+        companion_integrated = true,
+        companion_move_testcases = true,
+        companion_place_in_dir = "./testcases", -- Default directory for cp companion plugin testcases
+
+        -- Runner configuration
+        runner = {
+          -- How to show the running process output
+          -- Values: "split", "quickfix", "notifier", "floating", "toggleterm"
+          output_mode = "split",
+
+          -- Split position and size when output_mode is "split"
+          split_policy = "vertical",
+          split_size = 80,
+
+          -- Floating window settings when output_mode is "floating"
+          floating_border = "rounded",
+          floating_centered = true,
+          floating_width = 0.9, -- percentage of editor width
+          floating_height = 0.9, -- percentage of editor height
+          floating_x = 0.5, -- percentage of editor width
+          floating_y = 0.5, -- percentage of editor height
+
+          -- Auto-close output window when done
+          close_on_complete = false,
+
+          -- How much time to wait between consecutive testcases
+          testcase_timeout = 200, -- in milliseconds
+
+          -- Control compilation/execution time limits
+          compile_timeout = 3000, -- 3 seconds
+          run_timeout = 5000, -- 5 seconds
+        },
+
+        -- Templates configuration
+        template = {
+          -- Path to templates directory
+          path = vim.fn.stdpath("config") .. "/cp_templates",
+
+          -- Default template when creating a new file
+          default = "main.cpp",
+
+          -- Default destination for the created file
+          destination = "./",
+
+          -- Map file extensions to template names
+          templates_by_extension = {
+            cpp = "main.cpp",
+            c = "main.c",
+            python = "main.py",
+            rust = "main.rs",
+            java = "Main.java",
+          },
+        },
+
+        -- Testcases configuration
+        testcases = {
+          -- Path to testcases directory
+          path = "./testcases",
+
+          -- Preferred names for input files
+          input_name = "input",
+
+          -- Preferred names for output files
+          output_name = "output",
+
+          -- File extensions for testcase files
+          input_ext = ".in",
+          output_ext = ".out",
+
+          -- Interactive testcase settings
+          interactive = {
+            active = false,
+            timeout = 200, -- ms
+          },
+        },
+
+        -- Editor configuration
+        editor = {
+          -- Sequence of prompts for creating testcases
+          new_testcase_prompt = "sequential", -- "sequential" or "single"
+
+          -- Preferred editor to edit files
+          -- Values: "builtin", "nui", "telescope", "system", "ui_select"
+          editor = "builtin",
+
+          -- Delete empty testcases
+          delete_empty_testcases = false,
+        },
+
+        -- Display configuration
+        display = {
+          -- Show all paths in selection menu
+          show_full_path = false,
+
+          -- How to format testcase titles in selection menu
+          testcase_title_format = "%d",
+
+          -- Width/height of selection menu
+          ui_select_max_width = 0.9, -- percentage of editor width
+          ui_select_max_height = 0.9, -- percentage of editor height
+        },
+
+        -- Cache configuration
+        cache = {
+          -- Values: "json", "sqlite"
+          backend = "json",
+
+          -- Path to cache directory
+          path = vim.fn.stdpath("cache") .. "/competitest",
+        },
+
+        -- Commands that will be used for compilation and execution
+        -- Use hardcoded filenames for simplicity and reliability
+        compile_command = {
+          cpp = { exec = "g++", args = { "-Wall", "-std=c++17", "-o", "main", "main.cpp" } },
+          c = { exec = "gcc", args = { "-Wall", "-std=c11", "-o", "main", "main.c" } },
+          python = { exec = "", args = {} }, -- Python doesn't need compilation
+          java = { exec = "javac", args = { "Main.java" } },
+          rust = { exec = "rustc", args = { "-o", "main", "main.rs" } },
+        },
+
+        run_command = {
+          cpp = { exec = "./main", args = {} },
+          c = { exec = "./main", args = {} },
+          python = { exec = "python3", args = { "main.py" } },
+          java = { exec = "java", args = { "Main" } },
+          rust = { exec = "./main", args = {} },
+        },
+
+        -- Checker configuration (to validate output)
+        -- Using simple diff command with hardcoded approach
+        check_command = "diff -u",
+
+        -- Statistics configuration
+        stats = {
+          -- Automatic time measurement for testcases
+          measure_time = true,
+
+          -- Time measurement precision
+          time_format = "%.3f", -- 3 decimal places in seconds
+        },
+
+        -- Debug configuration
+        debug = {
+          -- Enable debug mode
+          enable = false,
+
+          -- Debug logs location
+          log_path = vim.fn.stdpath("cache") .. "/competitest/debug.log",
+        },
+      })
+    end
+  },
 }
 
 require("lazy").setup {
