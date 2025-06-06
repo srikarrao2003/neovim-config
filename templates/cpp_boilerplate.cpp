@@ -165,6 +165,47 @@ bool isPrime(ll n) {
       return false;
   return true;
 }
+// O(sqrt(n))
+std::vector<int> primeFactors(int n) {
+  std::vector<int> factors;
+
+  // Factor out the 2s
+  while (n % 2 == 0) {
+    factors.push_back(2);
+    n /= 2;
+  }
+
+  // Factor out odd numbers from 3 up to sqrt(n)
+  for (int i = 3; i * i <= n; i += 2) {
+    while (n % i == 0) {
+      factors.push_back(i);
+      n /= i;
+    }
+  }
+
+  // If n is still greater than 1, it is a prime number
+  if (n > 1) {
+    factors.push_back(n);
+  }
+
+  return factors;
+}
+// O(sqrt(n))
+std::vector<int> allFactors(int n) {
+  std::vector<int> factors;
+
+  for (int i = 1; i * i <= n; ++i) {
+    if (n % i == 0) {
+      factors.push_back(i);
+      if (i != n / i) // Avoid duplicate for perfect squares
+        factors.push_back(n / i);
+    }
+  }
+
+  std::sort(factors.begin(),
+            factors.end()); // Optional: To get factors in ascending order
+  return factors;
+}
 bool isPowerOfTwo(int n) {
   if (n == 0)
     return false;
@@ -178,7 +219,7 @@ bool isPerfectSquare(ll x) {
   return false;
 }
 
-// Code by Abhinav Awasthi
+// Code by Srikar
 // Language C++
 // Practice->Success
 

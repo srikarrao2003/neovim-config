@@ -51,7 +51,8 @@ M.colorscheme_conf = {
           },
       },
     })
-    vim.cmd.colorscheme("catppuccin")
+    -- vim.cmd.colorscheme("catppuccin")
+    vim.cmd.colorscheme("onedark_dark")
 
     vim.cmd([[highlight! Visual guibg=#505783 gui=nocombine]])
   end,
