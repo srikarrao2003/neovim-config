@@ -79,6 +79,14 @@ local opts = {
 }
 
 local mappings = {
+    a = {
+        name = "Competitive Programming",
+        a = { "<cmd>CompetiTest add_testcase<CR>" , "Add test case" },
+        c = { "<cmd>CompetiTest template<CR>" , "Template" },
+        e = { "<cmd>CompetiTest edit_testcase<CR>" , "Edit test case" },
+        d = { "<cmd>CompetiTest delete_testcase<CR>" , "Delete testcase" },
+        r = { "<cmd>CompetiTest show_ui<CR>" , "Show UI" },
+    },
     b = {
         name = "Buffers",
         b = {
@@ -127,7 +135,7 @@ local mappings = {
 
     g = {
         name = "Git",
-        g = { "<cmd>lua _LAZYGIT_TOGGLE()<CR>", "Lazygit" },
+        g = { "<cmd>LazyGit<CR>", "LazyGit" },
         j = { "<cmd>lua require 'gitsigns'.next_hunk()<cr>", "Next Hunk" },
         k = { "<cmd>lua require 'gitsigns'.prev_hunk()<cr>", "Prev Hunk" },
         l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame" },
@@ -236,6 +244,11 @@ local mappings = {
                 "Test class",
             },
         },
+    },
+    r = {
+        name = "Symbol Rename types",
+        w = { "<cmd>Lspsaga rename<CR>", "Rename Symbol" },
+        r = { "<cmd>Lspsaga rename ++project<CR>" },
     },
     ["x"] = {"<cmd>lua vim.diagnostic.goto_next()<CR>",
             "Next Diagnostic",

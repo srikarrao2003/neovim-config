@@ -151,3 +151,20 @@ vim.keymap.set('n', '<space>fp', function()
   vim.fn.setreg('+', vim.fn.expand('%:p'))
   print(vim.fn.expand('%:p'))
 end, { desc = "Print full file path" })
+
+-- Removes default yanking while deleting the text
+vim.keymap.set({ 'n', 'x' }, 'd', '"_d', { desc = "Delete without yanking" })
+
+-- move across function setting
+vim.api.nvim_set_keymap('n', 'm', '}', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'M', '{', { noremap = true, silent = true })
+
+--delete everything in the buffer
+vim.keymap.set("n", "<space>d", "gg0vG$d", { desc = "Delete Everything in Buffer" })
+
+-- copy line
+vim.api.nvim_set_keymap('n', 'yL', 'y$', { noremap = true, silent = true })
+
+-- Replace All Uses with shortcut
+vim.keymap.set("n", "<Space>re", [[:%s/\<<C-r><C-w>\>//g<Left><Left>]], { noremap = true, silent = true })
+

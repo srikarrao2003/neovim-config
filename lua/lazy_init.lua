@@ -52,45 +52,7 @@ lazy.setup({
     { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 
     -- cmp plugins
-    {
-        "hrsh7th/nvim-cmp",
-        config = function()
-            local cmp = require("cmp")
-            cmp.setup({
-                snippet = {
-                    expand = function(args)
-                        require("luasnip").lsp_expand(args.body)
-                    end,
-                },
-                mapping = cmp.mapping.preset.insert({
-                    ["<Tab>"] = cmp.mapping.select_next_item(),
-                    ["<S-Tab>"] = cmp.mapping.select_prev_item(),
-                    ["<CR>"] = cmp.mapping.confirm({ select = true }),
-                }),
-                sources = cmp.config.sources({
-                    { name = "nvim_lsp" },
-                    { name = "buffer" },
-                    { name = "path" },
-                }),
-            })
-
-            -- Cmdline completion for `:` commands
-            cmp.setup.cmdline(":", {
-                mapping = cmp.mapping.preset.cmdline(),
-                sources = {
-                    { name = "cmdline" },
-                },
-            })
-
-            -- Cmdline completion for `/` and `?` search
-            cmp.setup.cmdline({ "/", "?" }, {
-                mapping = cmp.mapping.preset.cmdline(),
-                sources = {
-                    { name = "buffer" },
-                },
-            })
-        end,
-    }, -- The completion plugin
+    "hrsh7th/nvim-cmp", -- The completion plugin
     "hrsh7th/cmp-buffer", -- buffer completions
     "hrsh7th/cmp-path", -- path completions
     "hrsh7th/cmp-cmdline", -- cmdline completions
@@ -280,35 +242,6 @@ lazy.setup({
             "nvim-tree/nvim-web-devicons",
         },
     },
-    -- Bufferline
-    {
-        "akinsho/bufferline.nvim",
-        version = "*", -- or a specific tag, e.g., "v4.*"
-        dependencies = { "nvim-tree/nvim-web-devicons" },
-        config = function()
-            require("bufferline").setup({
-                options = {
-                    mode = "buffers", -- can also use "tabs"
-                    numbers = "none", -- or "ordinal", "buffer_id", "both"
-                    diagnostics = "nvim_lsp", -- show LSP diagnostics in bufferline
-                    show_buffer_close_icons = true,
-                    show_close_icon = false,
-                    persist_buffer_sort = true,
-                    separator_style = "slant", -- "slant", "thick", "thin", or { 'left', 'right' }
-                    enforce_regular_tabs = false,
-                    always_show_bufferline = true,
-                    offsets = {
-                        {
-                            filetype = "NvimTree",
-                            text = "File Explorer",
-                            highlight = "Directory",
-                            text_align = "left",
-                        },
-                    },
-                },
-            })
-        end,
-    },
     -- Autosave files
     {
         "okuuva/auto-save.nvim",
@@ -327,6 +260,25 @@ lazy.setup({
                 return vim.bo[buf].modifiable and not vim.bo[buf].readonly
             end,
             write_all_buffers = false,
+        },
+    },
+    -- competitive programming
+    {
+        "xeluxee/competitest.nvim",
+        dependencies = "MunifTanjim/nui.nvim",
+    },
+    --lazygit
+    {
+        "kdheepak/lazygit.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+        },
+        cmd = {
+            "LazyGit",
+            "LazyGitConfig",
+            "LazyGitCurrentFile",
+            "LazyGitFilter",
+            "LazyGitFilterCurrentFile",
         },
     },
 })
