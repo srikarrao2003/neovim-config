@@ -16,7 +16,7 @@ local formatting = null_ls.builtins.formatting
 null_ls.setup({
     sources = {
         -- Python
-        diagnostics.mypy,
+        -- diagnostics.mypy,
         formatting.black,
         formatting.isort,
         require("none-ls.diagnostics.flake8"),

@@ -89,6 +89,7 @@ local mappings = {
             "<cmd>bprevious <bar> bdelete #<cr>",
             "Delete current buffer",
         },
+        f = { "<cmd>Format<cr>", "Format" },
         o = {
             ":lua require('bufdel').delete_buffer_others()<cr>",
             "Close Other Buffers",
@@ -150,7 +151,6 @@ local mappings = {
             "<cmd>Telescope diagnostics<cr>",
             "Document Diagnostics",
         },
-        f = { "<cmd>Format<cr>", "Format" },
         i = { "<cmd>LspInfo<cr>", "Info" },
         I = { "<cmd>Mason<cr>", "Installer Info" },
         j = {
