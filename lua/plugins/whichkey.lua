@@ -128,9 +128,10 @@ local mappings = {
         f = {":lua require('telescope.builtin').find_files({ layout_strategy = 'vertical' })<CR>",
             "Find Files"},
         g = {":lua require('telescope.builtin').live_grep({ layout_strategy = 'vertical' })<CR>",
-            "Find Files"},
+            "Live Grep"},
         d = {":lua require('telescope.builtin').buffers({ layout_strategy = 'vertical' })<CR>",
-            "Find Files"},
+            "Find Buffers"},
+        h = { "<cmd>lua require'telescope.builtin'.find_files({hidden=true})<CR>", "Find Hidden Files" },
     },
 
     g = {
@@ -177,6 +178,7 @@ local mappings = {
             "Workspace Symbols",
         },
         g = { "<cmd>lua vim.lsp.buf.signature_help()<CR>", "Signature" },
+        p = { "<cmd>Lspsaga peek_definition<CR>", "Peek Definition" },
         q = { "<cmd>lua vim.diagnostic.setloclist()<CR>", "Local List" },
         t = { "<cmd>TodoTelescope<CR>", "Project TODO comments" },
     },
@@ -252,6 +254,9 @@ local mappings = {
     },
     ["x"] = {"<cmd>lua vim.diagnostic.goto_next()<CR>",
             "Next Diagnostic",
+    },
+    ["X"] = {"<cmd>lua vim.diagnostic.goto_prev()<CR>",
+            "Prev Diagnostic",
     },
     ["z"] = { "<cmd>ZenMode<CR>", "Zen Mode" },
 }
