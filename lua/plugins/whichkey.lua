@@ -180,6 +180,7 @@ local mappings = {
         g = { "<cmd>lua vim.lsp.buf.signature_help()<CR>", "Signature" },
         p = { "<cmd>Lspsaga peek_definition<CR>", "Peek Definition" },
         q = { "<cmd>lua vim.diagnostic.setloclist()<CR>", "Local List" },
+        o = { "<cmd>Lspsaga finder<CR>", "Lspsaga Finder "},
         t = { "<cmd>TodoTelescope<CR>", "Project TODO comments" },
     },
     s = {

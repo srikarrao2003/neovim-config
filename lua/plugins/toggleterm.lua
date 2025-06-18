@@ -3,6 +3,10 @@ if not status_ok then
     return
 end
 
+local zsh_path = vim.fn.system('which zsh'):gsub('\n', '')
+
+vim.o.shell = zsh_path
+
 toggleterm.setup({
     size = 20,
     open_mapping = [[<c-\>]],
@@ -15,7 +19,7 @@ toggleterm.setup({
     persist_size = true,
     direction = "float",
     close_on_exit = true,
-    shell = vim.o.shell,
+    shell = zsh_path,
     float_opts = {
         border = "curved",
         winblend = 0,

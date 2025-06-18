@@ -19,7 +19,7 @@ null_ls.setup({
         -- diagnostics.mypy,
         formatting.black,
         formatting.isort,
-        require("none-ls.diagnostics.flake8"),
+        -- require("none-ls.diagnostics.flake8"),
         -- require("none-ls.diagnostics.ruff"), -- Replace above with ruff when mature
 
         -- C/C++

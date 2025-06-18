@@ -32,10 +32,10 @@ keymap("n", "<C-t>", ":enew<CR>", opts)
 -- Navigation that just makes sense to me --
 keymap("n", ";", ":", opts)
 keymap("n", "0", "g0", opts)
-keymap("n", "L", "g$", opts)
-keymap("n","H", "g^", opts)
-keymap("v", "L", "g$", opts)
-keymap("v","H", "g^", opts)
+keymap("n", "L", "$", opts)
+keymap("n","H", "^", opts)
+keymap("v", "L", "$", opts)
+keymap("v","H", "^", opts)
 keymap("n","t", "%", opts)
 keymap("v","t", "%", opts)
 keymap("n", "j", "gj", opts)
@@ -121,7 +121,7 @@ keymap(
 -- See lua/plugins/whichkey.lua
 
 -- Hop.NVIM
-keymap("n", "f", "<cmd>HopWord<CR>", opts)
+keymap("n", "s", "<cmd>HopWord<CR>", opts)
 
 -- nvim-hlslens
 keymap(
@@ -161,6 +161,8 @@ vim.api.nvim_set_keymap('n', 'M', '{', { noremap = true, silent = true })
 
 --delete everything in the buffer
 vim.keymap.set("n", "<space>d", "gg0vG$d", { desc = "Delete Everything in Buffer" })
+
+vim.keymap.set('n', 'o', 'o <BS>', { noremap = true })
 
 -- copy line
 vim.api.nvim_set_keymap('n', 'yL', 'y$', { noremap = true, silent = true })

@@ -38,12 +38,18 @@ nvim_tree.setup({
         update_root = true,
     },
     view = {
-        width = 25,
+        width = 40,
+        side = "left",
+        preserve_window_proportions = false,
+        number = false,
+        relativenumber = false,
+        signcolumn = "yes",
     },
     filters = {
         custom = {
             ".git",
         },
+        exclude = {"build"},
     },
 })
 
