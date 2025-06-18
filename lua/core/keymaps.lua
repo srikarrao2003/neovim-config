@@ -170,3 +170,6 @@ vim.api.nvim_set_keymap('n', 'yL', 'y$', { noremap = true, silent = true })
 -- Replace All Uses with shortcut
 vim.keymap.set("n", "<Space>re", [[:%s/\<<C-r><C-w>\>//g<Left><Left>]], { noremap = true, silent = true })
 
+-- Toggle AutoSave
+vim.keymap.set("n", "<space>as", ":ASGlobalToggle<CR>", { desc = "Toggle AutoSave" })
+

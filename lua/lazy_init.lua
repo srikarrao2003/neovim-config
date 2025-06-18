@@ -244,23 +244,8 @@ lazy.setup({
     },
     -- Autosave files
     {
-        "okuuva/auto-save.nvim",
-        event = { "InsertLeave" },
-        opts = {
-            -- Save only on InsertLeave
-            execution_message = {
-                message = function()
-                    return "AutoSaved at " .. os.date("%H:%M:%S")
-                end,
-                dim = 0.18,
-                cleaning_interval = 1250,
-            },
-            trigger_events = { "InsertLeave" },
-            condition = function(buf)
-                return vim.bo[buf].modifiable and not vim.bo[buf].readonly
-            end,
-            write_all_buffers = false,
-        },
+      "nullishamy/autosave.nvim",
+      event = { "InsertLeave", "TextChanged" },
     },
     -- competitive programming
     {

@@ -226,17 +226,17 @@ bool isPerfectSquare(ll x) {
 // Code
 
 int32_t main() {
-  int test_case;
-  cin >> test_case;
-  while (test_case--) {
-    int n;
-    cin >> n;
-    vector<int> v(n);
-    for (int i = 0; i < n; i++) {
-      cin >> v[i];
+    int test_case;
+    cin >> test_case;
+    while (test_case--) {
+        int n;
+        cin >> n;
+        vector<int> v(n);
+        for (int i = 0; i < n; i++) {
+            cin >> v[i];
+        }
     }
-  }
-  return 0;
+    return 0;
 }
 
 // End
