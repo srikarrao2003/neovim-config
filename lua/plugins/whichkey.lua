@@ -131,7 +131,7 @@ local mappings = {
             "Live Grep"},
         d = {":lua require('telescope.builtin').buffers({ layout_strategy = 'vertical' })<CR>",
             "Find Buffers"},
-        h = { "<cmd>lua require'telescope.builtin'.find_files({hidden=true})<CR>", "Find Hidden Files" },
+        h = { "<cmd>lua require'telescope.builtin'.find_files({hidden=true, no_ignore=true})<CR>", "Find Hidden Files" },
     },
 
     g = {
