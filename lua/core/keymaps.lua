@@ -92,7 +92,7 @@ keymap("x", "<A-k>", ":move '<-2<CR>gv-gv", opts)
 keymap(
     "n",
     "<C-h>",
-    "<cmd>lua require'telescope.builtin'.find_files({hidden=true})<CR>",
+    "<cmd>lua require'telescope.builtin'.find_files({hidden=true, no_ignore=true})<CR>",
     opts
 )
 keymap(
