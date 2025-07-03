@@ -201,10 +201,6 @@ local mappings = {
     },
 
     ["v"] = { "<cmd>AerialToggle<CR>", "Symbols Outline" },
-    ["m"] = {
-        require("plugins.markdown-preview").execute,
-        "Markdown Preview Toggle",
-    },
 
     j = {
         name = "Debugger",
