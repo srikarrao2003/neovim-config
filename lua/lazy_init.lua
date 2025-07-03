@@ -112,14 +112,6 @@ lazy.setup({
         dependencies = { "nvim-treesitter/nvim-treesitter" },
     },
 
-    -- Markdown previewer
-    {
-        "fmorroni/peek.nvim",
-        branch = "callouts",
-        event = { "VeryLazy" },
-        build = "deno task --quiet build:fast",
-    },
-
     -- Brackets
     { "windwp/nvim-autopairs", event = "InsertEnter" }, -- Automatically close brackets
     { "kylechui/nvim-surround", event = "VeryLazy" }, -- Conveniently change brackets
