@@ -173,3 +173,7 @@ vim.keymap.set("n", "<Space>re", [[:%s/\<<C-r><C-w>\>//g<Left><Left>]], { norema
 -- Toggle AutoSave
 vim.keymap.set("n", "<space>as", ":ASGlobalToggle<CR>", { desc = "Toggle AutoSave" })
 
+-- Toggle buffers
+vim.keymap.set('n','<Tab>', ':bnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n','<S-Tab>', ':bprevious<CR>', { noremap = true, silent = true })
+

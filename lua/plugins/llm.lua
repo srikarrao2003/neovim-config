@@ -4,8 +4,8 @@ if not status_ok then
 end
 
 llm.setup({
-    model = "coder_small", -- The default model to use.
-    host = "localhost", -- The host running the Ollama service.
+    model = "coder", -- The default model to use.
+    host = "172.20.12.29", -- The host running the Ollama service.
     port = "11434", -- The port on which the Ollama service is listening.
     display_mode = "split", -- The display mode. Can be "float" or "split".
     show_prompt = true, -- Shows the Prompt submitted to Ollama.

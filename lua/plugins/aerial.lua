@@ -37,4 +37,6 @@ aerial.setup({
     resize_to_content = false,
     highlight_on_hover = true,
     autojump = true,
+    close_on_select = true,
+    close_automatic_events = { "unsupported" },
 })

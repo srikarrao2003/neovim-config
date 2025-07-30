@@ -258,4 +258,16 @@ lazy.setup({
             "LazyGitFilterCurrentFile",
         },
     },
+    -- Open large files successfully
+    {
+        "mireq/large_file",
+        config = function()
+            require("large_file").setup({
+                size_limit = 512 * 1024, -- 512kiB
+                on_large_file_read_pre = function(_)
+                    vim.notify("Opening a large file!", vim.log.levels.WARN)
+                end,
+            })
+        end,
+    },
 })

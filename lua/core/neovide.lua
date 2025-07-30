@@ -31,4 +31,11 @@ if vim.g.neovide then
 
     local logo = require("plugins.logos.neovide")
     alpha_dashboard.section.header.val = logo
+    -- Performance and visual settings
+    vim.g.neovide_transparency = 0.95
+    vim.g.neovide_cursor_vfx_mode = "wireframe"      -- Cool cursor effect: railgun, torpedo, pixiedust, sonicboom, ripple, wireframe
+    vim.g.neovide_refresh_rate = 60
+    vim.g.neovide_fullscreen = false
+    vim.g.neovide_hide_mouse_when_typing = true
+    vim.g.neovide_remember_window_size = true
 end

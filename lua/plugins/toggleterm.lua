@@ -18,7 +18,7 @@ toggleterm.setup({
     insert_mappings = true,
     persist_size = true,
     direction = "float",
-    close_on_exit = true,
+    close_on_exit = false,
     shell = zsh_path,
     float_opts = {
         border = "curved",
