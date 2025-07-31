@@ -108,8 +108,7 @@ local mappings = {
         },
     },
     ["c"] = {
-        "<cmd>e ~/.config/nvim/init.lua<CR>",
-        "Open NVIM Config",
+        name = "Copilot",
     },
     ["e"] = {
         "<cmd>:keepjumps NvimTreeFindFileToggle<CR>",
@@ -182,6 +181,10 @@ local mappings = {
         q = { "<cmd>lua vim.diagnostic.setloclist()<CR>", "Local List" },
         o = { "<cmd>Lspsaga finder<CR>", "Lspsaga Finder "},
         t = { "<cmd>TodoTelescope<CR>", "Project TODO comments" },
+    },
+    ["n"] = {
+            "<cmd>e ~/.config/nvim/init.lua<CR>",
+            "Open NVIM Config",
     },
     s = {
         name = "Search",

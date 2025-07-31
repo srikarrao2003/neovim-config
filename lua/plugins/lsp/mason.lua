@@ -61,10 +61,10 @@ local settings = {
 }
 
 mason.setup(settings)
-mason_lspconfig.setup({
-    ensure_installed = servers,
-    automatic_installation = true,
-})
+-- mason_lspconfig.setup({
+--     ensure_installed = servers,
+--     automatic_installation = true,
+-- })
 
 local non_lsp_servers = {
     "debugpy", -- Python

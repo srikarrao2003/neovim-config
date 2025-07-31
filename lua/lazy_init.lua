@@ -270,4 +270,17 @@ lazy.setup({
             })
         end,
     },
+    {
+      "zbirenbaum/copilot.lua",
+      cmd = "Copilot",
+      event = "InsertEnter",
+    },
+    {
+      "CopilotC-Nvim/CopilotChat.nvim",
+      branch = "main",
+      dependencies = {
+        { "zbirenbaum/copilot.lua" },
+        { "nvim-lua/plenary.nvim" },
+      },
+    },
 })
