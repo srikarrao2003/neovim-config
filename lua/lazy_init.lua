@@ -283,4 +283,15 @@ lazy.setup({
         { "nvim-lua/plenary.nvim" },
       },
     },
+    {
+        "kawre/leetcode.nvim",
+        build = ":TSUpdate html",
+        dependencies = {
+          "nvim-treesitter/nvim-treesitter",
+          "nvim-telescope/telescope.nvim",
+          "nvim-lua/plenary.nvim",
+          "MunifTanjim/nui.nvim",
+          "nvim-tree/nvim-web-devicons",
+        },
+    },
 })
