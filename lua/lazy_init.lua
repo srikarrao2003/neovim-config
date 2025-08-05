@@ -270,28 +270,4 @@ lazy.setup({
             })
         end,
     },
-    {
-      "zbirenbaum/copilot.lua",
-      cmd = "Copilot",
-      event = "InsertEnter",
-    },
-    {
-      "CopilotC-Nvim/CopilotChat.nvim",
-      branch = "main",
-      dependencies = {
-        { "zbirenbaum/copilot.lua" },
-        { "nvim-lua/plenary.nvim" },
-      },
-    },
-    {
-        "kawre/leetcode.nvim",
-        build = ":TSUpdate html",
-        dependencies = {
-          "nvim-treesitter/nvim-treesitter",
-          "nvim-telescope/telescope.nvim",
-          "nvim-lua/plenary.nvim",
-          "MunifTanjim/nui.nvim",
-          "nvim-tree/nvim-web-devicons",
-        },
-    },
 })
