@@ -162,8 +162,6 @@ vim.api.nvim_set_keymap('n', 'M', '{', { noremap = true, silent = true })
 --delete everything in the buffer
 vim.keymap.set("n", "<space>d", "gg0vG$d", { desc = "Delete Everything in Buffer" })
 
-vim.keymap.set('n', 'o', 'o <BS>', { noremap = true })
-
 -- copy line
 vim.api.nvim_set_keymap('n', 'yL', 'y$', { noremap = true, silent = true })
 
