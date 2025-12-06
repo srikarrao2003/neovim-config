@@ -114,14 +114,11 @@ local mappings = {
         "<cmd>:keepjumps NvimTreeFindFileToggle<CR>",
         "Toggle File Explorer",
     },
-    ["o"] = {
-        "<cmd>:NvimTreeFocus<CR>",
-        "Nvim Tree Focus",
-    },
     ["h"] = { ":nohl<CR>", "No Highlight" },
     ["i"] = { ":wincmd p<CR>", "Switch To Buffer" },
-    ["q"] = { "<cmd>qa<cr>", "Close All Windows" },
-
+    j = {
+        name = "Jupyter",
+    },
     f = {
         name = "Telescope",
         f = {":lua require('telescope.builtin').find_files({ layout_strategy = 'vertical' })<CR>",
@@ -182,9 +179,23 @@ local mappings = {
         o = { "<cmd>Lspsaga finder<CR>", "Lspsaga Finder "},
         t = { "<cmd>TodoTelescope<CR>", "Project TODO comments" },
     },
+    ["m"] = {
+            require("plugins.markdown-preview").execute,
+            "Markdown Preview Toggle",
+    },
     ["n"] = {
             "<cmd>e ~/.config/nvim/init.lua<CR>",
             "Open NVIM Config",
+    },
+    ["o"] = {
+        "<cmd>:NvimTreeFocus<CR>",
+        "Nvim Tree Focus",
+    },
+    ["q"] = { "<cmd>qa<cr>", "Close All Windows" },
+    r = {
+        name = "Symbol Rename types",
+        w = { "<cmd>Lspsaga rename<CR>", "Rename Symbol" },
+        r = { "<cmd>Lspsaga rename ++project<CR>" },
     },
     s = {
         name = "Search",
@@ -205,7 +216,30 @@ local mappings = {
 
     ["v"] = { "<cmd>AerialToggle<CR>", "Symbols Outline" },
 
-    j = {
+    w = {
+          name = "Windows",
+          d = { "<C-w>d", "Show diagnostics under the cursor" },
+          h = { "<C-w>h", "Go to the left window" },
+          j = { "<C-w>j", "Go to the down window" },
+          k = { "<C-w>k", "Go to the up window" },
+          l = { "<C-w>l", "Go to the right window" },
+          o = { "<C-w>o", "Close all other windows" },
+          p = { "<C-w>p", "Go to the previous window" },
+          q = { "<C-w>q", "Quit a window" },
+          s = { "<C-w>s", "Split a window" },
+          T = { "<C-w>T", "Break out into a new tab" },
+          v = { "<C-w>v", "Split window vertically" },
+          w = { "<C-w>w", "Switch windows" },
+          x = { "<C-w>x", "Swap current with the next" },
+    },
+
+    ["x"] = {"<cmd>lua vim.diagnostic.goto_next()<CR>",
+            "Next Diagnostic",
+    },
+    ["X"] = {"<cmd>lua vim.diagnostic.goto_prev()<CR>",
+            "Prev Diagnostic",
+    },
+    y = {
         name = "Debugger",
         d = { "<cmd>lua require('dapui').toggle()<CR>", "Show Debug Panel" },
 
@@ -246,17 +280,6 @@ local mappings = {
                 "Test class",
             },
         },
-    },
-    r = {
-        name = "Symbol Rename types",
-        w = { "<cmd>Lspsaga rename<CR>", "Rename Symbol" },
-        r = { "<cmd>Lspsaga rename ++project<CR>" },
-    },
-    ["x"] = {"<cmd>lua vim.diagnostic.goto_next()<CR>",
-            "Next Diagnostic",
-    },
-    ["X"] = {"<cmd>lua vim.diagnostic.goto_prev()<CR>",
-            "Prev Diagnostic",
     },
     ["z"] = { "<cmd>ZenMode<CR>", "Zen Mode" },
 }

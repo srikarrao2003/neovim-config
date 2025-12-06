@@ -1,4 +1,4 @@
-vim.g.python3_host_prog = "~/.virtualenvs/neovim/bin/python3"
+vim.g.python3_host_prog = "~/.virtualenvs/vnvim/bin/python3"
 
 -- Auto-clear Neovim log files on startup
 vim.fn.system("truncate -s 0 ~/.local/state/nvim/log ~/.local/state/nvim/lsp.log")
@@ -22,6 +22,7 @@ require("plugins.debugger")
 require("plugins.dressing")
 require("plugins.doge")
 require("plugins.git")
+require("plugins.markdown-preview")
 require("plugins.motion")
 require("plugins.impatient")
 require("plugins.indentline")

@@ -270,4 +270,40 @@ lazy.setup({
             })
         end,
     },
+    -- Markdown previewer
+    {
+        "UtkarshKunwar/markdown-preview.nvim",
+        build = function()
+            vim.cmd([[Lazy load markdown-preview.nvim]])
+            vim.fn["mkdp#util#install"]()
+        end,
+    },
+    -- Jupyter setup
+    {
+      'Vigemus/iron.nvim',
+      config = function()
+        local iron = require("iron.core")
+
+        iron.setup {
+          config = {
+            scratch_repl = true,
+            repl_definition = {
+              python = {
+                command = {"jupyter", "console"},
+                format = require("iron.fts.common").bracketed_paste_python
+              },
+            },
+            repl_open_cmd = require('iron.view').right(60),
+          },
+          keymaps = {
+            send_motion = "<space>js",
+            visual_send = "<space>j",
+            send_line = "<space>jl",
+            send_mark = "<space>jm",
+            exit = "<space>jq",
+            clear = "<space>jc",
+          }
+        }
+      end
+    },
 })
