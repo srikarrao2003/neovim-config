@@ -56,7 +56,7 @@ keymap("n", "<C-S-Tab>", ":bprevious<CR>", opts)
 vim.opt.wildcharm = ("\t"):byte()
 keymap(
     "n",
-    "<Leader><Tab>",
+    "<space><Tab>",
     "<cmd>lua require'telescope.builtin'.buffers(require('telescope.themes').get_dropdown{previewer = false})<CR>",
     opts
 )
@@ -142,9 +142,23 @@ keymap("n", "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]], opts)
 keymap("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], opts)
 
 -- Text-Case
-keymap("n", "<Leader>cc", "<cmd>TextCaseOpenTelescope<CR>", opts)
-keymap("v", "<Leader>cc", "<cmd>TextCaseOpenTelescope<CR>", opts)
-keymap("n", "<Leader>cr", "<cmd>TextCaseOpenTelescopeLSPChange<CR>", opts)
+keymap("n", "<space>cc", "<cmd>TextCaseOpenTelescope<CR>", opts)
+keymap("v", "<space>cc", "<cmd>TextCaseOpenTelescope<CR>", opts)
+keymap("n", "<space>cr", "<cmd>TextCaseOpenTelescopeLSPChange<CR>", opts)
+
+-- Other toggles
+keymap(
+    "n",
+    "<space>py",
+    "<Cmd>lua _PYTHON_TOGGLE()<CR>",
+    opts
+)
+keymap(
+    "n",
+    "<space>pt",
+    "<Cmd>lua _TOP_TOGGLE()<CR>",
+    opts
+)
 
 -- Show full file path with <space>fp
 vim.keymap.set('n', '<space>fp', function()
