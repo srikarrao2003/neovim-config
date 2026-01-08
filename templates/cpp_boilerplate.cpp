@@ -3,6 +3,9 @@
 #include <bits/stdc++.h>
 #include <iostream>
 
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+
 using namespace std;
 
 #define int long long
@@ -29,6 +32,8 @@ typedef vector<pll> vpll;
 typedef vector<string> vs;
 typedef unordered_map<ll, ll> umll;
 typedef map<ll, ll> mll;
+typedef __gnu_pbds::tree<ll,__gnu_pbds::null_type, less<ll>, __gnu_pbds::rb_tree_tag,
+__gnu_pbds::tree_order_statistics_node_update> ordered_set;
 
 // Macros
 #define ff first
@@ -251,3 +256,5 @@ int32_t main() {
 }
 
 // End
+
+
