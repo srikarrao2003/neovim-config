@@ -7,6 +7,7 @@
 #include <ext/pb_ds/tree_policy.hpp>
 
 using namespace std;
+using namespace __gnu_pbds;
 
 #define int long long
 
@@ -32,8 +33,16 @@ typedef vector<pll> vpll;
 typedef vector<string> vs;
 typedef unordered_map<ll, ll> umll;
 typedef map<ll, ll> mll;
-typedef __gnu_pbds::tree<ll,__gnu_pbds::null_type, less<ll>, __gnu_pbds::rb_tree_tag,
-__gnu_pbds::tree_order_statistics_node_update> ordered_set;
+
+// Ordered set
+template <class T>
+using ordered_set =
+    tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+// Ordered multi set
+template <class T>
+using ordered_multiset =
+    tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 // Macros
 #define ff first
@@ -256,5 +265,3 @@ int32_t main() {
 }
 
 // End
-
-
