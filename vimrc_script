@@ -1,0 +1,570 @@
+" ============================================================================
+" 0. LEADER KEY (must be set before plugins and mappings)
+" ============================================================================
+let mapleader = " "
+let g:mapleader = " "
+
+" ============================================================================
+" 1. AUTO-INSTALL VIM-PLUG
+" ============================================================================
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" ============================================================================
+" 2. PLUGINS (Mapped to your Neovim capabilities)
+" ============================================================================
+call plug#begin('~/.vim/plugged')
+
+" Aesthetics, UI & Zen Mode
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+Plug 'itchyny/lightline.vim'
+Plug 'machakann/vim-highlightedyank'
+Plug 'junegunn/goyo.vim'                  " ZenMode equivalent (<space>z)
+
+" Which-Key Popup Menu
+Plug 'liuchengxu/vim-which-key'
+
+" Fuzzy Finding (Telescope equivalent)
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+" File Explorer & Symbols Outline (NvimTree & Aerial equivalents)
+Plug 'lambdalisue/fern.vim'
+Plug 'preservim/tagbar'
+
+" Git (Gitsigns & Fugitive)
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
+
+" Syntax, Editing & LSP/Diagnostics
+Plug 'sheerun/vim-polyglot'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
+Plug 'dense-analysis/ale'
+
+" Remote SSH Clipboard (OSC 52 - works over SSH without X11)
+Plug 'ojroques/vim-oscyank', {'branch': 'main'}
+
+call plug#end()
+
+" ============================================================================
+" 3. CORE PERFORMANCE & AIX / SSH CLIPBOARD
+" ============================================================================
+syntax on
+filetype plugin indent on
+
+set nocompatible
+set encoding=utf-8
+set hidden
+set updatetime=250
+set timeoutlen=400              " Trigger Which-Key quickly on <Space>
+set ttyfast
+set lazyredraw
+set synmaxcol=300
+
+set autoindent smartindent expandtab
+set tabstop=4 shiftwidth=4 softtabstop=4
+set ignorecase smartcase incsearch hlsearch
+
+" Persistent Undo
+set undofile
+if !isdirectory(expand('~/.vim/undodir'))
+  call mkdir(expand('~/.vim/undodir'), 'p')
+endif
+set undodir=~/.vim/undodir
+
+" --- CLIPBOARD OVER AIX SSH (OSC 52 + Local Fallback) ---
+set clipboard^=unnamed,unnamedplus
+let g:oscyank_term = 'default'  " Auto-detects tmux/kitty/iTerm2/WezTerm/Alacritty
+let g:oscyank_silent = 1
+
+augroup YankToLocalClipboard
+  autocmd!
+  " Automatically send every normal yank (y, yy, Y, d) to your local machine clipboard
+  autocmd TextYankPost * if v:event.operator is 'y' && v:event.regname is '' | execute 'OSCYankRegister "' | endif
+augroup END
+
+" ============================================================================
+" 4. UI & THEME
+" ============================================================================
+if has('termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+
+set number relativenumber
+set cursorline
+set signcolumn=yes
+set scrolloff=8
+set sidescrolloff=8
+set noshowmode
+set laststatus=2
+set splitbelow splitright
+set fillchars=vert:│
+set fillchars+=eob:\
+
+set background=dark
+silent! colorscheme catppuccin_mocha
+
+let g:lightline = {
+      \ 'colorscheme': 'catppuccin_mocha',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ], [ 'gitbranch', 'readonly', 'filename', 'modified' ] ],
+      \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'filetype' ] ]
+      \ },
+      \ 'component_function': { 'gitbranch': 'FugitiveHead' }
+      \ }
+
+" Vertical layout for FZF to match your Telescope layout_strategy = 'vertical'
+let g:fzf_layout = { 'window': { 'width': 0.85, 'height': 0.85, 'border': 'rounded' } }
+let g:fzf_preview_window = ['up:50%', 'ctrl-/']
+if executable('fd')
+  let $FZF_DEFAULT_COMMAND = 'fd --type f --hidden --follow --exclude .git'
+endif
+
+" ============================================================================
+" 5. HELPER FUNCTIONS (Buffers, Float Terminal, LazyGit)
+" ============================================================================
+function! CloseOtherBuffers() abort
+  let l:current = bufnr('%')
+  for l:buf in getbufinfo({'buflisted': 1})
+    if l:buf.bufnr != l:current
+      execute 'silent! bdelete ' . l:buf.bufnr
+    endif
+  endfor
+  echo "Closed all other buffers"
+endfunction
+
+function! ToggleFloatTerm(cmd) abort
+  if has('popupwin')
+    let buf = term_start(a:cmd, #{hidden: 1, term_finish: 'close'})
+    call popup_create(buf, #{minwidth: &columns - 12, minheight: &lines - 6, border: []})
+  else
+    execute 'term ++curwin ' . a:cmd
+  endif
+endfunction
+
+" ============================================================================
+" 6. YOUR WHICH-KEY SHORTCUTS (Exact Match to Your Neovim Config)
+" ============================================================================
+nnoremap <silent> <Space> :<c-u>WhichKey '<Space>'<CR>
+vnoremap <silent> <Space> :<c-u>WhichKeyVisual '<Space>'<CR>
+
+let g:which_key_map = {}
+let g:which_key_sep = '➜'
+let g:which_key_use_floating_win = 1
+
+" --- Single-Key Leader Mappings ---
+nnoremap <silent> <leader>e :keepjumps Fern . -drawer -reveal=% -toggle -width=35<CR>
+nnoremap <silent> <leader>o :Fern . -drawer -stay<CR><C-w>p
+nnoremap <silent> <leader>h :nohlsearch<CR>
+nnoremap <silent> <leader>i :wincmd p<CR>
+nnoremap <silent> <leader>n :e ~/.vimrc<CR>
+nnoremap <silent> <leader>q :qa<CR>
+nnoremap <silent> <leader>t :call ToggleFloatTerm(&shell)<CR>
+nnoremap <silent> <leader>v :TagbarToggle<CR>
+nnoremap <silent> <leader>x :ALENextWrap<CR>
+nnoremap <silent> <leader>X :ALEPreviousWrap<CR>
+nnoremap <silent> <leader>z :Goyo<CR>
+
+let g:which_key_map['e'] = 'Toggle File Explorer'
+let g:which_key_map['o'] = 'File Tree Focus'
+let g:which_key_map['h'] = 'No Highlight'
+let g:which_key_map['i'] = 'Switch To Previous Window'
+let g:which_key_map['n'] = 'Open VIM Config'
+let g:which_key_map['q'] = 'Close All Windows'
+let g:which_key_map['t'] = 'Toggle Float Terminal'
+let g:which_key_map['v'] = 'Symbols Outline'
+let g:which_key_map['x'] = 'Next Diagnostic'
+let g:which_key_map['X'] = 'Prev Diagnostic'
+let g:which_key_map['z'] = 'Zen Mode'
+
+" --- [b] Buffers ---
+nnoremap <silent> <leader>bd :bprevious <bar> bdelete #<CR>
+nnoremap <silent> <leader>bf :ALEFix<CR>
+nnoremap <silent> <leader>bl :Buffers<CR>
+nnoremap <silent> <leader>bo :call CloseOtherBuffers()<CR>
+nnoremap <silent> <leader>bp :Buffers<CR>
+
+let g:which_key_map.b = {
+      \ 'name' : '+Buffers',
+      \ 'd' : 'Delete current buffer',
+      \ 'f' : 'Format',
+      \ 'l' : 'List Buffers',
+      \ 'o' : 'Close Other Buffers',
+      \ 'p' : 'Buffer Pick',
+      \ }
+
+" --- [f] Fuzzy Find (Telescope Vertical Style) ---
+nnoremap <silent> <leader>ff :Files<CR>
+nnoremap <silent> <leader>fg :Rg<CR>
+nnoremap <silent> <leader>fd :Buffers<CR>
+nnoremap <silent> <leader>fh :call fzf#vim#files('', fzf#vim#with_preview({'options': '--prompt="Hidden> "'}))<CR>
+
+let g:which_key_map.f = {
+      \ 'name' : '+Telescope (FZF)',
+      \ 'f' : 'Find Files',
+      \ 'g' : 'Live Grep',
+      \ 'd' : 'Find Buffers',
+      \ 'h' : 'Find Hidden Files',
+      \ }
+
+" --- [g] Git ---
+nnoremap <silent> <leader>gg :call ToggleFloatTerm('lazygit')<CR>
+nnoremap <silent> <leader>gj :GitGutterNextHunk<CR>
+nnoremap <silent> <leader>gk :GitGutterPrevHunk<CR>
+nnoremap <silent> <leader>gl :Git blame<CR>
+nnoremap <silent> <leader>gp :GitGutterPreviewHunk<CR>
+nnoremap <silent> <leader>go :GFiles?<CR>
+nnoremap <silent> <leader>gb :Git branch<CR>
+nnoremap <silent> <leader>gc :Commits<CR>
+nnoremap <silent> <leader>gd :Gvdiffsplit<CR>
+
+let g:which_key_map.g = {
+      \ 'name' : '+Git',
+      \ 'g' : 'LazyGit',
+      \ 'j' : 'Next Hunk',
+      \ 'k' : 'Prev Hunk',
+      \ 'l' : 'Blame',
+      \ 'p' : 'Preview Hunk',
+      \ 'o' : 'Open changed file',
+      \ 'b' : 'Branches',
+      \ 'c' : 'Commits',
+      \ 'd' : 'Diff',
+      \ }
+
+" --- [l] LSP / ALE Diagnostics ---
+nnoremap <silent> <leader>la :ALECodeAction<CR>
+nnoremap <silent> <leader>ld :ALEPopulateLocList <bar> lopen<CR>
+nnoremap <silent> <leader>li :ALEInfo<CR>
+nnoremap <silent> <leader>lj :ALENextWrap<CR>
+nnoremap <silent> <leader>lk :ALEPreviousWrap<CR>
+nnoremap <silent> <leader>lr :ALERename<CR>
+nnoremap <silent> <leader>ls :TagbarToggle<CR>
+nnoremap <silent> <leader>lS :Tags<CR>
+nnoremap <silent> <leader>lp :ALEHover<CR>
+nnoremap <silent> <leader>lq :ALEPopulateLocList <bar> lopen<CR>
+nnoremap <silent> <leader>lo :ALEFindReferences<CR>
+nnoremap <silent> <leader>lt :Rg TODO\|FIXME\|HACK<CR>
+
+let g:which_key_map.l = {
+      \ 'name' : '+LSP',
+      \ 'a' : 'Code Action',
+      \ 'd' : 'Document Diagnostics',
+      \ 'i' : 'Info',
+      \ 'j' : 'Next Diagnostic',
+      \ 'k' : 'Prev Diagnostic',
+      \ 'r' : 'Rename',
+      \ 's' : 'Outline (Tagbar)',
+      \ 'S' : 'Workspace Symbols',
+      \ 'p' : 'Hover / Peek',
+      \ 'q' : 'Local List',
+      \ 'o' : 'Find References',
+      \ 't' : 'Project TODO comments',
+      \ }
+
+" --- [r] Rename ---
+nnoremap <silent> <leader>rw :ALERename<CR>
+nnoremap <silent> <leader>rr :ALERename<CR>
+
+let g:which_key_map.r = {
+      \ 'name' : '+Symbol Rename',
+      \ 'w' : 'Rename Symbol',
+      \ 'r' : 'Rename Project',
+      \ }
+
+" --- [s] Search ---
+nnoremap <silent> <leader>sb :Git branch<CR>
+nnoremap <silent> <leader>sc :Colors<CR>
+nnoremap <silent> <leader>sh :Helptags<CR>
+nnoremap <silent> <leader>sm :Man<CR>
+nnoremap <silent> <leader>sr :History<CR>
+nnoremap <silent> <leader>sR :registers<CR>
+nnoremap <silent> <leader>sk :Maps<CR>
+nnoremap <silent> <leader>sC :Commands<CR>
+
+let g:which_key_map.s = {
+      \ 'name' : '+Search',
+      \ 'b' : 'Branches',
+      \ 'c' : 'Colourscheme',
+      \ 'h' : 'Find Help',
+      \ 'm' : 'Man Pages',
+      \ 'r' : 'Open Recent File',
+      \ 'R' : 'Registers',
+      \ 'k' : 'Keymaps',
+      \ 'C' : 'Commands',
+      \ }
+
+" --- [w] Windows ---
+nnoremap <silent> <leader>wd :ALEHover<CR>
+nnoremap <silent> <leader>wh <C-w>h
+nnoremap <silent> <leader>wj <C-w>j
+nnoremap <silent> <leader>wk <C-w>k
+nnoremap <silent> <leader>wl <C-w>l
+nnoremap <silent> <leader>wo <C-w>o
+nnoremap <silent> <leader>wp <C-w>p
+nnoremap <silent> <leader>wq <C-w>q
+nnoremap <silent> <leader>ws <C-w>s
+nnoremap <silent> <leader>wT <C-w>T
+nnoremap <silent> <leader>wv <C-w>v
+nnoremap <silent> <leader>ww <C-w>w
+nnoremap <silent> <leader>wx <C-w>x
+
+let g:which_key_map.w = {
+      \ 'name' : '+Windows',
+      \ 'd' : 'Show diagnostics under cursor',
+      \ 'h' : 'Go to left window',
+      \ 'j' : 'Go to down window',
+      \ 'k' : 'Go to up window',
+      \ 'l' : 'Go to right window',
+      \ 'o' : 'Close all other windows',
+      \ 'p' : 'Go to previous window',
+      \ 'q' : 'Quit a window',
+      \ 's' : 'Split window',
+      \ 'T' : 'Break out into new tab',
+      \ 'v' : 'Split window vertically',
+      \ 'w' : 'Switch windows',
+      \ 'x' : 'Swap current with next',
+      \ }
+
+" --- [y] Debugger (Native Termdebug for GDB on AIX/C/C++) ---
+packadd! termdebug
+nnoremap <silent> <leader>yd :Termdebug<CR>
+nnoremap <silent> <leader>yc :Continue<CR>
+nnoremap <silent> <leader>yr :Run<CR>
+nnoremap <silent> <leader>ys :Step<CR>
+nnoremap <silent> <leader>yn :Over<CR>
+nnoremap <silent> <leader>yf :Finish<CR>
+nnoremap <silent> <leader>yb :Break<CR>
+nnoremap <silent> <leader>yx :Stop<CR>
+nnoremap <silent> <leader>yK :Evaluate<CR>
+
+let g:which_key_map.y = {
+      \ 'name' : '+Debugger (Termdebug)',
+      \ 'd' : 'Start Termdebug (GDB)',
+      \ 'c' : 'Continue',
+      \ 'r' : 'Run',
+      \ 's' : 'Step Into',
+      \ 'n' : 'Step Over',
+      \ 'f' : 'Step Out',
+      \ 'b' : 'Set Breakpoint',
+      \ 'x' : 'Stop',
+      \ 'K' : 'Evaluate Variable',
+      \ }
+
+call which_key#register('<Space>', "g:which_key_map")
+
+" ============================================================================
+" 7. SMART AIX FILE FINDER FALLBACK (fd -> rg -> POSIX find)
+" ============================================================================
+if executable('fd')
+  let $FZF_DEFAULT_COMMAND = 'fd --type f --hidden --follow --exclude .git'
+  let g:fzf_hidden_cmd = 'fd --type f --hidden --no-ignore --follow --exclude .git'
+elseif executable('rg')
+  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden -g "!.git"'
+  let g:fzf_hidden_cmd = 'rg --files --hidden --no-ignore -g "!.git"'
+else
+  let $FZF_DEFAULT_COMMAND = 'find . -type f -not -path "*/\.git/*"'
+  let g:fzf_hidden_cmd = 'find . -type f'
+endif
+
+" ============================================================================
+" 8. GENERAL & MOTION KEYMAPS (Ported from Neovim keymaps.lua)
+" ============================================================================
+
+" --- Better Window Navigation & Moving Splits ---
+nnoremap <silent> <Left>    <C-w>h
+nnoremap <silent> <Down>    <C-w>j
+nnoremap <silent> <Up>      <C-w>k
+nnoremap <silent> <Right>   <C-w>l
+nnoremap <silent> <C-Left>  <C-w>H
+nnoremap <silent> <C-Down>  <C-w>J
+nnoremap <silent> <C-Up>    <C-w>K
+nnoremap <silent> <C-Right> <C-w>L
+
+" --- Window Resizing ---
+nnoremap <silent> + <C-w>+
+nnoremap <silent> - <C-w>-
+nnoremap <silent> < <C-w><
+nnoremap <silent> > <C-w>>
+nnoremap <silent> = <C-w>=
+
+" --- Tabs & Buffer Navigation ---
+nnoremap <silent> <C-t>     :enew<CR>
+nnoremap <silent> <Tab>     :bnext<CR>
+nnoremap <silent> <S-Tab>   :bprevious<CR>
+nnoremap <silent> <C-Tab>   :bnext<CR>
+nnoremap <silent> <C-S-Tab> :bprevious<CR>
+
+" Dropdown-style buffer switcher on <space><Tab> (no preview, compact popup)
+set wildcharm=<Tab>
+nnoremap <silent> <leader><Tab> :call fzf#vim#buffers('', {'options': '--layout=reverse --info=inline', 'window': {'width': 0.5, 'height': 0.4, 'border': 'rounded'}})<CR>
+
+" --- "Navigation that just makes sense to me" ---
+nnoremap ; :
+nnoremap <silent> 0 g0
+nnoremap <silent> L $
+nnoremap <silent> H ^
+vnoremap <silent> L $
+vnoremap <silent> H ^
+nnoremap <silent> t %
+vnoremap <silent> t %
+nnoremap <silent> j gj
+nnoremap <silent> k gk
+nnoremap <silent> U <C-r>
+
+" Move across functions/paragraphs
+nnoremap <silent> m }
+nnoremap <silent> M {
+
+" Copy to end of line
+nnoremap <silent> yL y$
+
+" Delete without yanking (Blackhole register)
+nnoremap <silent> d "_d
+xnoremap <silent> d "_d
+
+" Delete everything in the buffer (into blackhole so clipboard stays clean)
+nnoremap <silent> <leader>d gg0vG$"_d
+
+" Replace all uses of word under cursor (Note: no <silent> so cmdline updates live)
+nnoremap <leader>re :%s/\<<C-r><C-w>\>//g<Left><Left>
+
+" --- Insert Mode ---
+inoremap <silent> jk <ESC>
+inoremap <silent> kj <ESC>
+inoremap <silent> <S-Del> <BS>
+
+" --- Visual & Visual Block Mode ---
+" Stay in indent mode
+vnoremap <silent> < <gv
+vnoremap <silent> > >gv
+
+" Paste without overwriting register
+vnoremap <silent> p "_dP
+
+" Move text up and down (Visual Block J/K)
+xnoremap <silent> J :move '>+1<CR>gv-gv
+xnoremap <silent> K :move '<-2<CR>gv-gv
+
+" Fix Alt+j / Alt+k escape sequences for AIX / SSH terminals
+execute "set <M-j>=\ej"
+execute "set <M-k>=\ek"
+vnoremap <silent> <M-j> :m .+1<CR>==
+vnoremap <silent> <M-k> :m .-2<CR>==
+xnoremap <silent> <M-j> :move '>+1<CR>gv-gv
+xnoremap <silent> <M-k> :move '<-2<CR>gv-gv
+
+" ============================================================================
+" 9. FZF, HOP, HLSLENS & CUSTOM TOGGLES
+" ============================================================================
+
+" --- Telescope Direct Shortcuts (<C-f>, <C-h>, <C-a>, <C-p>) ---
+nnoremap <silent> <C-f> :Files<CR>
+nnoremap <silent> <C-h> :call fzf#vim#files('', fzf#vim#with_preview({'source': g:fzf_hidden_cmd, 'options': '--prompt="Hidden/All> "'}))<CR>
+nnoremap <silent> <C-a> :Rg<CR>
+nnoremap <silent> <C-p> :History<CR>
+" Also update <space>fh to use the smart hidden command
+nnoremap <silent> <leader>fh :call fzf#vim#files('', fzf#vim#with_preview({'source': g:fzf_hidden_cmd, 'options': '--prompt="Hidden/All> "'}))<CR>
+
+" --- HopWord Equivalent (vim-easymotion) ---
+let g:EasyMotion_do_mapping = 0
+let g:EasyMotion_smartcase = 1
+nmap s <Plug>(easymotion-overwin-w)
+
+" ============================================================================
+" BULLETPROOF SEARCH MAPPINGS
+" ============================================================================
+set hlsearch
+
+" Unmap any previous bindings to clear conflicts
+silent! nunmap n
+silent! nunmap N
+
+" Direct native mappings with zero function overhead
+nnoremap <silent> n n
+nnoremap <silent> N N
+
+" --- Print & Copy Full File Path (<space>fp) ---
+function! PrintAndCopyFilePath() abort
+  let l:path = expand('%:p')
+  let @" = l:path
+  silent! let @+ = l:path
+  if exists(':OSCYankRegister')
+    silent! execute 'OSCYankRegister "'
+  endif
+  echohl ModeMsg | echo l:path | echohl None
+endfunction
+nnoremap <silent> <leader>fp :call PrintAndCopyFilePath()<CR>
+
+" --- Toggle AutoSave (<space>as) ---
+let g:auto_save_enabled = 0
+function! ToggleAutoSave() abort
+  let g:auto_save_enabled = !g:auto_save_enabled
+  augroup VimAutoSave
+    autocmd!
+    if g:auto_save_enabled
+      autocmd InsertLeave,TextChanged * silent! if &modifiable && !&readonly && expand('%') != '' | update | endif
+    endif
+  augroup END
+  echo "AutoSave: " . (g:auto_save_enabled ? "ON" : "OFF")
+endfunction
+nnoremap <silent> <leader>as :call ToggleAutoSave()<CR>
+
+" --- Python & Top Toggles (<space>py and <space>pt) ---
+" Automatically picks htop -> topas (standard on AIX) -> top
+function! OpenTopMonitor() abort
+  let l:cmd = executable('htop') ? 'htop' : (executable('topas') ? 'topas' : 'top')
+  call ToggleFloatTerm(l:cmd)
+endfunction
+nnoremap <silent> <leader>py :call ToggleFloatTerm(executable('python3') ? 'python3' : 'python')<CR>
+nnoremap <silent> <leader>pt :call OpenTopMonitor()<CR>
+
+" --- Text-Case Picker via FZF (<space>cc & <space>cr) ---
+function! ApplyTextCase(type) abort
+  let l:word = expand('<cword>')
+  if a:type =~ '^snake_case'
+    let l:new = tolower(substitute(l:word, '\(\u\)', '_\l\1', 'g'))
+    let l:new = substitute(l:new, '^_', '', '')
+  elseif a:type =~ '^UPPER_CASE'
+    let l:new = toupper(substitute(l:word, '\(\l\)\(\u\)', '\1_\2', 'g'))
+  elseif a:type =~ '^camelCase'
+    let l:new = substitute(l:word, '_\(\l\)', '\u\1', 'g')
+    let l:new = substitute(l:new, '^\u', '\l&', '')
+  elseif a:type =~ '^PascalCase'
+    let l:new = substitute(l:word, '\(^\|_\)\(\l\)', '\u\2', 'g')
+  elseif a:type =~ '^dash-case'
+    let l:new = tolower(substitute(l:word, '_', '-', 'g'))
+  else
+    return
+  endif
+  execute 'normal! ciw' . l:new
+endfunction
+
+function! TextCaseOpenFzf() abort
+  call fzf#run(fzf#wrap({
+        \ 'source': ['snake_case', 'camelCase', 'PascalCase', 'UPPER_CASE', 'dash-case'],
+        \ 'sink': function('ApplyTextCase'),
+        \ 'options': '--prompt="TextCase> " --layout=reverse',
+        \ 'window': {'width': 0.35, 'height': 0.3, 'border': 'rounded'}
+        \ }))
+endfunction
+nnoremap <silent> <leader>cc :call TextCaseOpenFzf()<CR>
+vnoremap <silent> <leader>cc :call TextCaseOpenFzf()<CR>
+nnoremap <silent> <leader>cr :call TextCaseOpenFzf()<CR>
+
+" --- Register New Leader Keymaps in Which-Key ---
+let g:which_key_map['d'] = 'Delete Everything in Buffer'
+let g:which_key_map['<Tab>'] = 'Switch Buffer (Dropdown)'
+let g:which_key_map.r['e'] = 'Replace Word Under Cursor'
+let g:which_key_map.f['p'] = 'Print & Copy Full File Path'
+let g:which_key_map.a = { 'name': '+AutoSave', 's': 'Toggle AutoSave' }
+let g:which_key_map.p = { 'name': '+Processes/REPL', 'y': 'Toggle Python', 't': 'Toggle Top/Topas' }
+let g:which_key_map.c = { 'name': '+TextCase', 'c': 'Convert Case (FZF)', 'r': 'Convert Case' }
