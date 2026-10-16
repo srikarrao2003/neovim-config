@@ -48,6 +48,9 @@ Plug 'dense-analysis/ale'
 " Remote SSH Clipboard (OSC 52 - works over SSH without X11)
 Plug 'ojroques/vim-oscyank', {'branch': 'main'}
 
+" Toggle Term
+Plug 'voldikss/vim-floaterm'
+
 call plug#end()
 
 " ============================================================================
@@ -68,6 +71,13 @@ set synmaxcol=300
 set autoindent smartindent expandtab
 set tabstop=4 shiftwidth=4 softtabstop=4
 set ignorecase smartcase incsearch hlsearch
+
+" Prefer zsh, fall back to bash, then keep Vim's default shell
+if executable('zsh')
+  let &shell = exepath('zsh')
+elseif executable('bash')
+  let &shell = exepath('bash')
+endif
 
 " Persistent Undo
 set undofile
@@ -129,6 +139,11 @@ if executable('fd')
   let $FZF_DEFAULT_COMMAND = 'fd --type f --hidden --follow --exclude .git'
 endif
 
+let g:floaterm_wintype = 'float'
+let g:floaterm_width = 0.85
+let g:floaterm_height = 0.85
+let g:floaterm_position = 'center'
+
 " ============================================================================
 " 5. HELPER FUNCTIONS (Buffers, Float Terminal, LazyGit)
 " ============================================================================
@@ -142,12 +157,20 @@ function! CloseOtherBuffers() abort
   echo "Closed all other buffers"
 endfunction
 
-function! ToggleFloatTerm(cmd) abort
-  if has('popupwin')
-    let buf = term_start(a:cmd, #{hidden: 1, term_finish: 'close'})
-    call popup_create(buf, #{minwidth: &columns - 12, minheight: &lines - 6, border: []})
+" function! ToggleFloatTerm(cmd) abort
+"   if has('popupwin')
+"     let buf = term_start(a:cmd, #{hidden: 1, term_finish: 'close'})
+"     call popup_create(buf, #{minwidth: &columns - 12, minheight: &lines - 6, border: []})
+"   else
+"     execute 'term ++curwin ' . a:cmd
+"   endif
+" endfunction
+
+function! ToggleFloatTerm(name, cmd) abort
+  if floaterm#terminal#get_bufnr(a:name) >= 0
+    execute 'FloatermToggle ' . a:name
   else
-    execute 'term ++curwin ' . a:cmd
+    execute 'FloatermNew --name=' . a:name . ' ' . a:cmd
   endif
 endfunction
 
@@ -168,7 +191,7 @@ nnoremap <silent> <leader>h :nohlsearch<CR>
 nnoremap <silent> <leader>i :wincmd p<CR>
 nnoremap <silent> <leader>n :e ~/.vimrc<CR>
 nnoremap <silent> <leader>q :qa<CR>
-nnoremap <silent> <leader>t :call ToggleFloatTerm(&shell)<CR>
+nnoremap <silent> <leader>t :call ToggleFloatTerm('shell', &shell)<CR>
 nnoremap <silent> <leader>v :TagbarToggle<CR>
 nnoremap <silent> <leader>x :ALENextWrap<CR>
 nnoremap <silent> <leader>X :ALEPreviousWrap<CR>
@@ -217,7 +240,7 @@ let g:which_key_map.f = {
       \ }
 
 " --- [g] Git ---
-nnoremap <silent> <leader>gg :call ToggleFloatTerm('lazygit')<CR>
+nnoremap <silent> <leader>gg :call ToggleFloatTerm('lazygit', 'lazygit')<CR>
 nnoremap <silent> <leader>gj :GitGutterNextHunk<CR>
 nnoremap <silent> <leader>gk :GitGutterPrevHunk<CR>
 nnoremap <silent> <leader>gl :Git blame<CR>
@@ -441,6 +464,7 @@ nnoremap <leader>re :%s/\<<C-r><C-w>\>//g<Left><Left>
 inoremap <silent> jk <ESC>
 inoremap <silent> kj <ESC>
 inoremap <silent> <S-Del> <BS>
+tnoremap <silent> <C-n> <C-\><C-n>
 
 " --- Visual & Visual Block Mode ---
 " Stay in indent mode
@@ -522,9 +546,9 @@ nnoremap <silent> <leader>as :call ToggleAutoSave()<CR>
 " Automatically picks htop -> topas (standard on AIX) -> top
 function! OpenTopMonitor() abort
   let l:cmd = executable('htop') ? 'htop' : (executable('topas') ? 'topas' : 'top')
-  call ToggleFloatTerm(l:cmd)
+  call ToggleFloatTerm('monitor', l:cmd)
 endfunction
-nnoremap <silent> <leader>py :call ToggleFloatTerm(executable('python3') ? 'python3' : 'python')<CR>
+nnoremap <silent> <leader>py :call ToggleFloatTerm('python', executable('python3') ? 'python3' : 'python')<CR>
 nnoremap <silent> <leader>pt :call OpenTopMonitor()<CR>
 
 " --- Text-Case Picker via FZF (<space>cc & <space>cr) ---
